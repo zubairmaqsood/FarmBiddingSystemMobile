@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">FarmBiddingSystem</string>
+    <string name="header_logo">Farm Bidding System</string>
+    <string name="home_btn">Home</string>
+    <string name="my_bid_btn">My Bid</string>
+    <string name="profile_btn">Profile</string>
+    <string name="header_img_desc">A brief description of the image for accessibility"</string>
 </resources>
