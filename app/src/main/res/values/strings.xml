@@ -1,8 +1,13 @@
 <resources>
-    <string name="app_name">FarmBiddingSystem</string>
+    <string name="app_name">Farm Bidding</string>
     <string name="header_logo">Farm Bidding System</string>
     <string name="home_btn">Home</string>
     <string name="my_bid_btn">My Bid</string>
     <string name="profile_btn">Profile</string>
     <string name="header_img_desc">A brief description of the image for accessibility"</string>
+    <string name="searchBar_img_desc">A search bar logo for search bar</string>
+    <string name="carousel_img_desc">Images for fields images to display</string>
+    <string name="auc_title">Live Auctions</string>
+    <string name="closing_title">Closing Soon</string>
+    <string name="search_placeholder">Search for various crops…</string>
 </resources>

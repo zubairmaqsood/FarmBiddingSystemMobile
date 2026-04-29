@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#FFFFFF</color>
-    <color name="body">#d3e8bd</color>
-    <color name="header">#2d6a4f</color>
+    <color name="farm_green">#2d6a4f</color>
+    <color name="farm_light_green">#40916c</color>
+    <color name="icon_unselected_grey">#888888</color>
+    <color name="bottom_nav_background">#C1DBCB</color>
 </resources>
