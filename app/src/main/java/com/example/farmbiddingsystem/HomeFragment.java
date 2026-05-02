@@ -32,7 +32,8 @@ public class HomeFragment extends Fragment {
         List<Integer> images = Arrays.asList(
                 R.drawable.main_pic1,
                 R.drawable.main_pic2,
-                android.R.drawable.ic_menu_compass
+                R.drawable.main_pic3,
+                R.drawable.main_pic4
         );
 
         // 3. Attach the Adapter

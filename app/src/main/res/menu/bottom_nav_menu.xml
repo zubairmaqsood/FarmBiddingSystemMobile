@@ -8,13 +8,14 @@
         android:title="@string/home_btn" />
 
     <item
+        android:id="@+id/nav_profile"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/my_bid_btn" />
+
+    <item
         android:id="@+id/nav_bids"
         android:icon="@android:drawable/ic_menu_sort_by_size"
         android:title="@string/profile_btn" />
 
-    <item
-        android:id="@+id/nav_profile"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        android:title="@string/my_bid_btn" />
 
 </menu>
