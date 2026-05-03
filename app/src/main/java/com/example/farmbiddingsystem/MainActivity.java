@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                     // This line is now active!
                     selectedFragment = new BidsFragment();
                 } else if (itemId == R.id.nav_profile) {
-                    // selectedFragment = new ProfileFragment();
+                     selectedFragment = new ProfileFragment();
                 }
 
                 // 5. Swap the fragment!

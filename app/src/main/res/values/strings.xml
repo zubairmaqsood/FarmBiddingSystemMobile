@@ -13,4 +13,6 @@
     <string name="auc_title">Live Auctions</string>
     <string name="closing_title">Closing Soon</string>
     <string name="search_placeholder">Search for various crops…</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
