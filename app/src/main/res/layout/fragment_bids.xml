@@ -2,17 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/default_margin">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="My Active Bids"
-        android:textColor="#2d6a4f"
-        android:textSize="24sp"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:text="@string/my_bid_header"
+        android:textColor="@color/farm_green"
+        android:textSize="@dimen/default_txt_size"
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView

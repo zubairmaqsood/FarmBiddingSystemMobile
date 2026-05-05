@@ -1,19 +1,27 @@
 <resources>
     <string name="app_name">Farm Bidding</string>
     <string name="header_logo">Farm Bidding System</string>
+    
+<!--  Bottom Bar Strings  -->
     <string name="home_btn">Home</string>
     <string name="my_bid_btn">My Bid</string>
     <string name="profile_btn">Profile</string>
 
+<!--  Homepage strings  -->
     <string name="header_img_desc">A brief description of the image for accessibility"</string>
     <string name="searchBar_img_desc">A search bar logo for search bar</string>
     <string name="carousel_img_desc">Images for fields images to display</string>
     <string name="bid_btn_img_desc">Bid button Image</string>
-
     <string name="auc_title">Live Auctions</string>
     <string name="closing_title">Closing Soon</string>
     <string name="search_placeholder">Search for various crops…</string>
     <string name="bid_btn_txt">Bid Now</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+<!--  Bid Form Strings  -->
+    <string name="bid_form_header">Place Your Bid</string>
+    <string name="bid_form_placeholder">Enter amount (e.g., 4600)</string>
+    <string name="bid_form_btn">Confirm Bid</string>
+
+<!--  My bid strings  -->
+    <string name="my_bid_header">My Active Bids</string>
 </resources>

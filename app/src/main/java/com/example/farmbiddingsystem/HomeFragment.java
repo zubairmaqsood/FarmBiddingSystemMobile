@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,6 +49,19 @@ public class HomeFragment extends Fragment {
                 sliderHandler.postDelayed(sliderRunnable, 3000); // 3000ms = 3 seconds
             }
         });
+
+        Button btnBidNow = view.findViewById(R.id.btnBidNow);
+
+        if (btnBidNow != null) {
+            btnBidNow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // This is the code that pops up the Bottom Sheet!
+                    BidForm bidSheet = new BidForm();
+                    bidSheet.show(requireActivity().getSupportFragmentManager(), "BidForm");
+                }
+            });
+        }
 
         return view;
     }

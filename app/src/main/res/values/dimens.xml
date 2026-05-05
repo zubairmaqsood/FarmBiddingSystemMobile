@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="default_height">40dp</dimen>
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="height_50">50dp</dimen>
+    <dimen name="height_24">24dp</dimen>
+    <dimen name="default_txt_size">24sp</dimen>
+    <dimen name="txt_20">20sp</dimen>
+    <dimen name="txt_18">18sp</dimen>
 </resources>

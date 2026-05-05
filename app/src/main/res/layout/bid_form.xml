@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bid_form_background"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <View
+        android:layout_width="@dimen/default_height"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:background="#E0E0E0" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bid_form_header"
+        android:textColor="@color/farm_green"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Current Highest Bid: Rs 4,500"
+        android:textColor="#757575" />
+
+    <EditText
+        android:id="@+id/etBidAmount"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_50"
+        android:layout_marginTop="@dimen/default_margin"
+        android:background="@android:drawable/editbox_background_normal"
+        android:hint="@string/bid_form_placeholder"
+        android:inputType="numberDecimal"
+        android:paddingHorizontal="12dp" />
+
+    <Button
+        android:id="@+id/btnSubmitBid"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_50"
+        android:layout_marginTop="@dimen/height_24"
+        android:text="@string/bid_form_btn"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="@color/farm_green"
+        app:cornerRadius="8dp" />
+
+</LinearLayout>
