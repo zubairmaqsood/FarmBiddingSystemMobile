@@ -5,4 +5,16 @@
     <color name="farm_light_green">#40916c</color>
     <color name="icon_unselected_grey">#888888</color>
     <color name="bottom_nav_background">#C1DBCB</color>
+
+    <!-- Primary Green -->
+    <color name="primary_green">#2E7D32</color>
+
+    <!-- Light Background -->
+    <color name="background_light">#F5F5F5</color>
+
+    <!-- Link Blue -->
+    <color name="link_blue">#1976D2</color>
+
+    <!-- White -->
+    <color name="white">#FFFFFF</color>
 </resources>

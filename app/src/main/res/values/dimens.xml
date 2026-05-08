@@ -10,4 +10,19 @@
     <dimen name="default_txt_size">24sp</dimen>
     <dimen name="txt_20">20sp</dimen>
     <dimen name="txt_18">18sp</dimen>
+
+
+            <!-- Padding -->
+    <dimen name="padding_large">24dp</dimen>
+    <dimen name="padding_medium">12dp</dimen>
+
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_medium">15dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+
+    <dimen name="text_small">16sp</dimen>
+    <dimen name="text_medium">24sp</dimen>
+    <dimen name="text_large">32sp</dimen>
+
+
 </resources>

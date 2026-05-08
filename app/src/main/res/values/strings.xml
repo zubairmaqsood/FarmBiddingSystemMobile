@@ -27,4 +27,17 @@
 
 <!-- Item auction strings   -->
     <string name="auc_img_desc">crop pics</string>
+
+    <!-- login strings -->
+
+
+    <string name="welcome">Welcome</string>
+    <string name="login">Log In</string>
+
+    <string name="email_hint">Your Email</string>
+    <string name="password_hint">Your Password</string>
+
+    <string name="forgot_password">Forgot Password?</string>
+
+    <string name="signup_text">Don\'t have an account? Sign Up</string>
 </resources>
