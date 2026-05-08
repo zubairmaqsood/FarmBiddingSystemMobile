@@ -4,6 +4,9 @@
     <dimen name="default_margin">16dp</dimen>
     <dimen name="height_50">50dp</dimen>
     <dimen name="height_24">24dp</dimen>
+    <dimen name="height_18">18dp</dimen>
+    <dimen name="btn_radius">8dp</dimen>
+
     <dimen name="default_txt_size">24sp</dimen>
     <dimen name="txt_20">20sp</dimen>
     <dimen name="txt_18">18sp</dimen>

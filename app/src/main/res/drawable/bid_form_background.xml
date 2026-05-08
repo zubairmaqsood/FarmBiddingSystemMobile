@@ -3,11 +3,11 @@
     android:shape="rectangle">
 
     <!-- This gives the sheet a clean, solid white background -->
-    <solid android:color="#FFFFFF" />
+    <solid android:color="@color/white" />
 
     <!-- This rounds ONLY the top two corners so it looks like a sheet sliding up -->
     <corners
-        android:topLeftRadius="24dp"
-        android:topRightRadius="24dp" />
+        android:topLeftRadius="@dimen/height_24"
+        android:topRightRadius="@dimen/height_24" />
 
 </shape>

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bid_form_background"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="@dimen/height_24">
 
     <View
         android:layout_width="@dimen/default_height"
@@ -29,24 +29,34 @@
         android:text="Current Highest Bid: Rs 4,500"
         android:textColor="#757575" />
 
-    <EditText
-        android:id="@+id/etBidAmount"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_50"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_margin"
-        android:background="@android:drawable/editbox_background_normal"
         android:hint="@string/bid_form_placeholder"
-        android:inputType="numberDecimal"
-        android:paddingHorizontal="12dp" />
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:boxStrokeColor="@color/farm_green"
+        app:hintTextColor="@color/farm_green"
+        app:boxCornerRadiusTopStart="@dimen/btn_radius"
+        app:boxCornerRadiusTopEnd="@dimen/btn_radius"
+        app:boxCornerRadiusBottomStart="@dimen/btn_radius"
+        app:boxCornerRadiusBottomEnd="@dimen/btn_radius">
 
-    <Button
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etBidAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSubmitBid"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_50"
         android:layout_marginTop="@dimen/height_24"
         android:text="@string/bid_form_btn"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         app:backgroundTint="@color/farm_green"
         app:cornerRadius="8dp" />
-
 </LinearLayout>

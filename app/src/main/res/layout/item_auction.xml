@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="160dp"
     android:layout_height="wrap_content"
     android:layout_marginEnd="12dp"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="@dimen/default_margin"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white"
+    app:strokeColor="#EBEBEB"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,13 +24,15 @@
             android:layout_height="120dp"
             android:scaleType="centerCrop"
             android:src="@android:drawable/ic_menu_gallery"
-            android:background="#E0E0E0" />
+            android:background="#E0E0E0"
+            android:contentDescription="@string/auc_img_desc"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -46,7 +53,9 @@
                 android:textSize="12sp"
                 android:drawablePadding="6dp"
                 app:drawableStartCompat="@drawable/ic_weight"
-                app:drawableTint="#8D6E63" />
+                app:drawableTint="#8D6E63"
+                android:gravity="center_vertical"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -57,7 +66,9 @@
                 android:textSize="12sp"
                 android:drawablePadding="6dp"
                 app:drawableStartCompat="@drawable/ic_gavel"
-                app:drawableTint="#1976D2" />
+                app:drawableTint="#1976D2"
+                android:gravity="center_vertical"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -69,7 +80,9 @@
                 android:textStyle="bold"
                 android:drawablePadding="6dp"
                 app:drawableStartCompat="@drawable/ic_timer"
-                app:drawableTint="#E65100" />
+                app:drawableTint="#E65100"
+                android:gravity="center_vertical"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -81,18 +94,21 @@
                 android:textStyle="bold"
                 android:drawablePadding="6dp"
                 app:drawableStartCompat="@drawable/ic_price"
-                app:drawableTint="#2d6a4f" />
+                app:drawableTint="#2d6a4f"
+                android:gravity="center_vertical"
+                />
 
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnBidNow"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/bid_btn_txt"
+                android:textColor="#FFFFFF"
                 app:backgroundTint="@color/farm_green"
-            />
+                app:cornerRadius="8dp" />
 
         </LinearLayout>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

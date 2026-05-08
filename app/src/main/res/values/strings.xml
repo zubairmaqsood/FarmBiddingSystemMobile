@@ -24,4 +24,7 @@
 
 <!--  My bid strings  -->
     <string name="my_bid_header">My Active Bids</string>
+
+<!-- Item auction strings   -->
+    <string name="auc_img_desc">crop pics</string>
 </resources>
