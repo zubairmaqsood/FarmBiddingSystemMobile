@@ -39,5 +39,6 @@
 
     <string name="forgot_password">Forgot Password?</string>
 
-    <string name="signup_text">Don\'t have an account? Sign Up</string>
+    <string name="signup_text">Don\'t have an account?</string>
+    <string name="signup_btn_txt">Signup</string>
 </resources>
