@@ -14,5 +14,8 @@
 
     <!-- Link Blue -->
     <color name="link_blue">#1976D2</color>
+    <color name="green">#198754</color>
 
+    <color name="black">#000000</color>
+    <color name="backgroundColor">#F5F5F5</color>
 </resources>
