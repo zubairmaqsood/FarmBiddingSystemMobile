@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Farm Bidding</string>
     <string name="header_logo">Farm Bidding System</string>
-    
-<!--  Bottom Bar Strings  -->
+
+    <!--  Bottom Bar Strings  -->
     <string name="home_btn">Home</string>
     <string name="my_bid_btn">My Bid</string>
     <string name="profile_btn">Profile</string>
 
-<!--  Homepage strings  -->
+    <!--  Homepage strings  -->
     <string name="header_img_desc">A brief description of the image for accessibility"</string>
     <string name="searchBar_img_desc">A search bar logo for search bar</string>
     <string name="carousel_img_desc">Images for fields images to display</string>
@@ -16,16 +16,16 @@
     <string name="closing_title">Closing Soon</string>
     <string name="search_placeholder">Search for various crops…</string>
     <string name="bid_btn_txt">Bid Now</string>
-    
-<!--  Bid Form Strings  -->
+
+    <!--  Bid Form Strings  -->
     <string name="bid_form_header">Place Your Bid</string>
     <string name="bid_form_placeholder">Enter amount (e.g., 4600)</string>
     <string name="bid_form_btn">Confirm Bid</string>
 
-<!--  My bid strings  -->
+    <!--  My bid strings  -->
     <string name="my_bid_header">My Active Bids</string>
 
-<!-- Item auction strings   -->
+    <!-- Item auction strings   -->
     <string name="auc_img_desc">crop pics</string>
 
     <!-- login strings -->
@@ -41,4 +41,21 @@
 
     <string name="signup_text">Don\'t have an account?</string>
     <string name="signup_btn_txt">Signup</string>
+
+    <!-- signup screen strings-->
+
+
+    <string name="signup">Signup</string>
+    <string name="full_name">Full Name</string>
+    <string name="cnic">CNIC</string>
+    <string name="email">Email Address</string>
+    <string name="phone">Phone Number</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="company_name">Company Name</string>
+    <string name="company_address">Company Address</string>
+    <string name="farm_location">Farm Location</string>
+    <string name="farm_size">Farm Size</string>
+    <string name="city">City</string>
+
 </resources>

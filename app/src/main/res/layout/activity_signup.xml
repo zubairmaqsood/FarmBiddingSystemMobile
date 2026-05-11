@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    tools:context=".SignupActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_large">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:padding="@dimen/padding_large"
+            android:elevation="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signup"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:layout_marginBottom="20dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerUserType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"/>
+
+            <EditText
+                android:id="@+id/etFullName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/full_name"
+                android:inputType="textPersonName"
+                android:padding="12dp"/>
+
+            <EditText
+                android:id="@+id/etCnic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/cnic"
+                android:layout_marginTop="12dp"
+                android:inputType="number"
+                android:padding="12dp"/>
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:layout_marginTop="12dp"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"/>
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone"
+                android:layout_marginTop="12dp"
+                android:inputType="phone"
+                android:padding="12dp"/>
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:layout_marginTop="12dp"
+                android:inputType="textPassword"
+                android:padding="12dp"/>
+
+            <EditText
+                android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/confirm_password"
+                android:layout_marginTop="12dp"
+                android:inputType="textPassword"
+                android:padding="12dp"/>
+
+            <!-- Buyer Layout -->
+
+            <LinearLayout
+                android:id="@+id/layoutBuyer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Spinner
+                    android:id="@+id/spinnerBuyerType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"/>
+
+                <EditText
+                    android:id="@+id/etCompanyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/company_name"
+                    android:layout_marginTop="12dp"/>
+
+                <EditText
+                    android:id="@+id/etCompanyAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/company_address"
+                    android:layout_marginTop="12dp"/>
+
+                <Spinner
+                    android:id="@+id/spinnerCompanyType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"/>
+
+            </LinearLayout>
+
+            <!-- Farmer Layout -->
+
+            <LinearLayout
+                android:id="@+id/layoutFarmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/etFarmLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/farm_location"
+                    android:layout_marginTop="12dp"/>
+
+                <EditText
+                    android:id="@+id/etFarmSize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/farm_size"
+                    android:layout_marginTop="12dp"/>
+
+                <EditText
+                    android:id="@+id/etCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/city"
+                    android:layout_marginTop="12dp"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnSignup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/signup"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/green"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
