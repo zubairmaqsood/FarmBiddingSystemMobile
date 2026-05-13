@@ -12,17 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FarmBiddingSystem">
         <activity
+            android:name=".ViewAuction"
+            android:exported="false" />
+        <activity
             android:name=".SignupActivity"
-            android:exported="false" >
-
-        </activity>
-
+            android:exported="false"></activity>
         <activity
             android:name=".LoginActivity"
-            android:exported="false">
-
-        </activity>
-
+            android:exported="false"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">

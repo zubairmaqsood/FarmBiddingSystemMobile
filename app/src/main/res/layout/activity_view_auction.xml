@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_large">
+
+        <!-- Toolbar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/padding_view_bid_medium">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/back_icon_size"
+                android:layout_height="@dimen/back_icon_size"
+                android:src="@android:drawable/ic_media_previous"
+                android:background="@color/green"
+                android:padding="@dimen/padding_view_small"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back_to_auctions"
+                android:textSize="@dimen/title_text_size"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginStart="@dimen/margin_view_small"/>
+        </LinearLayout>
+
+        <!-- Product Image -->
+        <ImageView
+            android:id="@+id/detailImg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/product_image_height"
+            android:scaleType="centerCrop"
+            android:src="@drawable/onion" />
+
+        <!-- Status -->
+        <TextView
+            android:id="@+id/detailStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ACTIVE"
+            android:textColor="@color/black"
+            android:background="@color/yellow"
+            android:padding="@dimen/padding_view_small"
+            android:layout_marginTop="@dimen/margin_medium"/>
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/detailTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fresh Onion"
+            android:textSize="@dimen/heading_text_size"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/margin_view_small"/>
+
+        <!-- Farmer -->
+        <TextView
+            android:id="@+id/detailFarmer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sold by: Ali"
+            android:textSize="@dimen/normal_text_size"
+            android:textColor="@color/gray"
+            android:layout_marginTop="@dimen/margin_small"/>
+
+        <!-- Location -->
+        <TextView
+            android:id="@+id/detailLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location: Lahore"
+            android:textSize="@dimen/normal_text_size"
+            android:textColor="@color/gray"
+            android:layout_marginTop="@dimen/margin_xsmall"/>
+
+        <!-- Phone -->
+        <TextView
+            android:id="@+id/detailPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone: 03001234567"
+            android:textSize="@dimen/normal_text_size"
+            android:textColor="@color/gray"
+            android:layout_marginTop="@dimen/margin_xsmall"/>
+
+        <!-- Quantity -->
+        <TextView
+            android:id="@+id/detailQty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantity: 100 KG"
+            android:textColor="@color/white"
+            android:background="@color/gray"
+            android:padding="@dimen/padding_view_small"
+            android:layout_marginTop="@dimen/margin_medium"/>
+
+        <!-- Highest Bidder -->
+        <TextView
+            android:id="@+id/detailBidderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Highest Bidder: Ahmed"
+            android:textSize="@dimen/subheading_text_size"
+            android:textStyle="bold"
+            android:textColor="@color/blue"
+            android:layout_marginTop="@dimen/margin_large"/>
+
+        <!-- Prices -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:padding="@dimen/padding_medium"
+            android:layout_marginTop="@dimen/margin_large">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current Top Bid"
+                    android:textColor="@color/gray"/>
+
+                <TextView
+                    android:id="@+id/detailHighestBid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rs 5000"
+                    android:textSize="@dimen/price_text_size"
+                    android:textStyle="bold"
+                    android:textColor="@color/green"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Base Price"
+                    android:textColor="@color/gray"/>
+
+                <TextView
+                    android:id="@+id/detailBasePrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rs 3000"
+                    android:textSize="@dimen/subheading_text_size"
+                    android:textStyle="bold"
+                    android:textColor="@color/dark_gray"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Timer -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time Remaining"
+            android:textColor="@color/gray"
+            android:layout_marginTop="@dimen/margin_xlarge"/>
+
+        <TextView
+            android:id="@+id/detailTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="02:12:45"
+            android:textSize="@dimen/timer_text_size"
+            android:textStyle="bold"
+            android:textColor="@color/red"/>
+
+        <!-- Description -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textStyle="bold"
+            android:textSize="@dimen/subheading_text_size"
+            android:layout_marginTop="@dimen/margin_xlarge"/>
+
+        <TextView
+            android:id="@+id/detailDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fresh farm onions available for bidding."
+            android:textColor="@color/gray"
+            android:lineSpacingExtra="@dimen/line_spacing"
+            android:layout_marginTop="@dimen/margin_xsmall"/>
+
+        <!-- Total Bids -->
+        <TextView
+            android:id="@+id/detailBidCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Bids: 12"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/margin_medium"/>
+
+        <!-- Button -->
+        <Button
+            android:id="@+id/mainBidBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/place_bid"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="@dimen/button_text_size"
+            android:backgroundTint="@color/green"
+            android:padding="@dimen/button_padding"
+            android:layout_marginTop="@dimen/margin_xlarge"/>
+
+    </LinearLayout>
+
+</ScrollView>

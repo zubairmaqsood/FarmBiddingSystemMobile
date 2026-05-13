@@ -57,5 +57,8 @@
     <string name="farm_location">Farm Location</string>
     <string name="farm_size">Farm Size</string>
     <string name="city">City</string>
+    <!-- view bid strings -->
 
+    <string name="back_to_auctions">Back to Auctions</string>
+    <string name="place_bid">Place Bid Now</string>
 </resources>
