@@ -30,10 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 1. Load the HomeFragment by default when the app first opens
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment())
-                    .commit();
+            loadFragment(new HomeFragment());
         }
+
 
         // 2. Find the Bottom Bar in your layout
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
@@ -58,14 +57,20 @@ public class MainActivity extends AppCompatActivity {
 
                 // 5. Swap the fragment!
                 if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, selectedFragment)
-                            .commit();
+                    loadFragment(selectedFragment);
                     return true; // Return true to tell Android to highlight the button
                 }
 
                 return false;
             }
         });
+
+    }
+
+    private void loadFragment(Fragment fragment){
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 }
