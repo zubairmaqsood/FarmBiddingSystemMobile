@@ -1,7 +1,10 @@
 package com.example.farmbiddingsystem;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem; // Make sure to add this import
+import android.view.View;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull; // Make sure to add this import
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView; // Make sure to add this import
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +40,14 @@ public class MainActivity extends AppCompatActivity {
 
         // 2. Find the Bottom Bar in your layout
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+        FloatingActionButton createAucBtn = findViewById(R.id.fabAddAuction);
+
+        createAucBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CreateAuctionForm.class));
+            }
+        });
 
         // 3. Make it listen for clicks!
         bottomNav.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
@@ -47,23 +59,28 @@ public class MainActivity extends AppCompatActivity {
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.nav_home) {
-                    selectedFragment = new HomeFragment();
-                } else if (itemId == R.id.nav_bids) {
-                    // This line is now active!
-                    selectedFragment = new BidsFragment();
-                } else if (itemId == R.id.nav_profile) {
-                     selectedFragment = new ProfileFragment();
-                }
+                    // Show the FAB and load HomeFragment
+                    createAucBtn.show();
+                    loadFragment(new HomeFragment());
+                    return true;
 
-                // 5. Swap the fragment!
-                if (selectedFragment != null) {
-                    loadFragment(selectedFragment);
-                    return true; // Return true to tell Android to highlight the button
+                } else if (itemId == R.id.nav_bids) {
+                    // Hide the FAB and load BidsFragment
+                    createAucBtn.hide();
+                    loadFragment(new BidsFragment());
+                    return true;
+
+                } else if (itemId == R.id.nav_profile) {
+                    // Hide the FAB and load ProfileFragment
+                    createAucBtn.hide();
+                    loadFragment(new ProfileFragment());
+                    return true;
                 }
 
                 return false;
             }
         });
+
 
     }
 

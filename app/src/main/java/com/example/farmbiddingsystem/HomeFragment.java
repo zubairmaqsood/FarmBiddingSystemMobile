@@ -1,5 +1,6 @@
 package com.example.farmbiddingsystem;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,6 +64,19 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
+
+        EditText editSearch = view.findViewById(R.id.editSearch);
+
+        editSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Instantly open the real search screen!
+                Intent intent = new Intent(requireActivity(), SearchActivity.class);
+                startActivity(intent);
+
+
+            }
+        });
 
         return view;
     }

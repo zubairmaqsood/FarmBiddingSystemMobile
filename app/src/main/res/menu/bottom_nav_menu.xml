@@ -4,17 +4,17 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@android:drawable/ic_menu_compass"
+        android:icon="@drawable/ic_nav_home"
         android:title="@string/home_btn" />
 
     <item
         android:id="@+id/nav_bids"
-        android:icon="@android:drawable/ic_menu_myplaces"
+        android:icon="@drawable/ic_nav_bids"
         android:title="@string/my_bid_btn" />
 
     <item
         android:id="@+id/nav_profile"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_nav_profile"
         android:title="@string/profile_btn" />
 
 
