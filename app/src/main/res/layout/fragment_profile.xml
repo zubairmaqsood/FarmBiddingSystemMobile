@@ -12,16 +12,16 @@
         android:layout_height="wrap_content"
         android:background="@color/farm_green"
         android:paddingHorizontal="@dimen/height_24"
-        android:paddingTop="@dimen/default_height"
-        android:paddingBottom="30dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardProfileImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             app:cardCornerRadius="@dimen/height_50"
             app:cardElevation="4dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -257,17 +257,7 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0"/>
 
-                <TextView
-                    android:id="@+id/btnHelp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:drawablePadding="@dimen/default_margin"
-                    android:paddingVertical="@dimen/default_margin"
-                    android:text="Help &amp; Support"
-                    android:textColor="#333333"
-                    android:textSize="16sp"
-                    app:drawableStartCompat="@android:drawable/ic_menu_help" />
+
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0"/>
 

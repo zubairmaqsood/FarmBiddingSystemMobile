@@ -109,6 +109,16 @@
                 app:backgroundTint="@color/farm_green"
                 app:cornerRadius="8dp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/view_detail_btn_txt"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/farm_green"
+                app:cornerRadius="8dp" />
+
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

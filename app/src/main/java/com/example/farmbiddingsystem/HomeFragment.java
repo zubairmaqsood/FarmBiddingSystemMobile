@@ -65,6 +65,15 @@ public class HomeFragment extends Fragment {
             });
         }
 
+        Button btnViewDetails = view.findViewById(R.id.btnViewDetails);
+
+        btnViewDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(requireActivity(),ViewAuction.class));
+            }
+        });
+
         EditText editSearch = view.findViewById(R.id.editSearch);
 
         editSearch.setOnClickListener(new View.OnClickListener() {
