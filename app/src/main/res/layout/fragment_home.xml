@@ -15,6 +15,7 @@
         android:paddingTop="@dimen/default_margin"
         android:paddingBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -92,7 +93,10 @@
                     android:textSize="14sp"
                     android:maxLines="1"
                     android:inputType="text"
-                    android:imeOptions="actionSearch" />
+                    android:imeOptions="actionSearch"
+                    android:focusable="false"
+                    android:clickable="true"
+                    />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
