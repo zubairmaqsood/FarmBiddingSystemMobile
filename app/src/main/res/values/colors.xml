@@ -18,4 +18,15 @@
 
     <color name="black">#000000</color>
     <color name="backgroundColor">#F5F5F5</color>
+
+    <!-- view bid colours -->
+
+
+        <color name="gray">#6C757D</color>
+        <color name="dark_gray">#495057</color>
+        <color name="yellow">#FFC107</color>
+        <color name="blue">#0D6EFD</color>
+        <color name="red">#DC3545</color>
+        <color name="light_bg">#F5F5F5</color>
+
 </resources>
