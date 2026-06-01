@@ -6,6 +6,8 @@
     <dimen name="height_24">24dp</dimen>
     <dimen name="height_18">18dp</dimen>
     <dimen name="btn_radius">8dp</dimen>
+    <dimen name="min_screen_height">600dp</dimen>
+    <dimen name="padding_xxlarge">48dp</dimen>
 
     <dimen name="default_txt_size">24sp</dimen>
     <dimen name="txt_20">20sp</dimen>

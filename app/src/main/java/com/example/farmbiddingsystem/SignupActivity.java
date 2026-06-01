@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.AutoCompleteTextView;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.button.MaterialButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SignupActivity extends AppCompatActivity {
 
     // Declare all UI elements
-    Spinner spinnerUserType, spinnerBuyerType, spinnerCompanyType;
-    LinearLayout layoutBuyer, layoutFarmer;
-    Button btnSignup;
+    AutoCompleteTextView spinnerUserType, spinnerBuyerType, spinnerCompanyType;
+    com.google.android.material.card.MaterialCardView cardBuyer, cardFarmer;
+    com.google.android.material.button.MaterialButton btnSignup;
 
     // General EditTexts
     EditText etFullName, etCnic, etEmail, etPhone, etPassword, etConfirmPassword;
@@ -34,11 +34,9 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         // Initialize Layouts and Button
-        layoutBuyer = findViewById(R.id.layoutBuyer);
-        layoutFarmer = findViewById(R.id.layoutFarmer);
+        cardBuyer = findViewById(R.id.cardBuyer);
+        cardFarmer = findViewById(R.id.cardFarmer);
         btnSignup = findViewById(R.id.btnSignup);
-
-        // Initialize Spinners
         spinnerUserType = findViewById(R.id.spinnerUserType);
         spinnerBuyerType = findViewById(R.id.spinnerBuyerType);
         spinnerCompanyType = findViewById(R.id.spinnerCompanyType);
@@ -64,36 +62,21 @@ public class SignupActivity extends AppCompatActivity {
         setupSpinners();
 
         // Handle Layout Visibility Based on User Type
-        spinnerUserType.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                String selected = spinnerUserType.getSelectedItem().toString();
-
-                if (selected.equals("Buyer")) {
-                    layoutBuyer.setVisibility(View.VISIBLE);
-                    layoutFarmer.setVisibility(View.GONE);
-                } else if (selected.equals("Farmer")) {
-                    layoutFarmer.setVisibility(View.VISIBLE);
-                    layoutBuyer.setVisibility(View.GONE);
-                } else {
-                    layoutBuyer.setVisibility(View.GONE);
-                    layoutFarmer.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                // Do nothing
+        spinnerUserType.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = spinnerUserType.getText().toString();
+            if (selected.equals("Buyer")) {
+                cardBuyer.setVisibility(View.VISIBLE);
+                cardFarmer.setVisibility(View.GONE);
+            } else if (selected.equals("Farmer")) {
+                cardFarmer.setVisibility(View.VISIBLE);
+                cardBuyer.setVisibility(View.GONE);
+            } else {
+                cardBuyer.setVisibility(View.GONE);
+                cardFarmer.setVisibility(View.GONE);
             }
         });
 
         // Trigger Validation on Button Click
-        btnSignup.setOnClickListener(v -> {
-            if (validateSignupForm()) {
-                // If validation returns true, proceed with backend signup logic here
-                Toast.makeText(SignupActivity.this, "Validation Passed! Signup Successful.", Toast.LENGTH_LONG).show();
-            }
-        });
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,20 +87,22 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    private void setupSpinners() {
-        // User Type Spinner
-        String[] userTypes = {"Select User Type", "Buyer", "Farmer"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, userTypes);
-        spinnerUserType.setAdapter(adapter);
 
-        // Buyer Type Spinner
+    private void setupSpinners() {
+        String[] userTypes = {"Select User Type", "Buyer", "Farmer"};
+        ArrayAdapter<String> userAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, userTypes);
+        spinnerUserType.setAdapter(userAdapter);
+
         String[] buyerTypes = {"Select Buyer Type", "Individual", "Wholesaler", "Retailer", "Exporter"};
-        ArrayAdapter<String> buyerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, buyerTypes);
+        ArrayAdapter<String> buyerAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, buyerTypes);
         spinnerBuyerType.setAdapter(buyerAdapter);
 
-        // Company Type Spinner
-        String[] companyTypes = {"Select Company Type", "Private Limited", "Public Limited", "Sole Proprietorship", "Partnership"};
-        ArrayAdapter<String> companyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, companyTypes);
+        String[] companyTypes = {"Select Company Type", "Private Limited", "Public Limited",
+                "Sole Proprietorship", "Partnership"};
+        ArrayAdapter<String> companyAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, companyTypes);
         spinnerCompanyType.setAdapter(companyAdapter);
     }
 
@@ -129,7 +114,7 @@ public class SignupActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        String userType = spinnerUserType.getSelectedItem() != null ? spinnerUserType.getSelectedItem().toString() : "";
+        String userType = spinnerUserType.getText().toString().trim();
 
         if (userType.equals("Select User Type") || userType.isEmpty()) {
             Toast.makeText(this, "Please select a User Type (Buyer or Farmer)", Toast.LENGTH_SHORT).show();
@@ -176,10 +161,10 @@ public class SignupActivity extends AppCompatActivity {
 
         switch (userType) {
             case "Buyer":
-                String buyerType = spinnerBuyerType.getSelectedItem().toString();
+                String buyerType = spinnerBuyerType.getText().toString().trim();
                 String companyName = etCompanyName.getText().toString().trim();
                 String companyAddress = etCompanyAddress.getText().toString().trim();
-                String companyType = spinnerCompanyType.getSelectedItem().toString();
+                String companyType = spinnerCompanyType.getText().toString().trim();
 
                 if (buyerType.equals("Select Buyer Type")) {
                     Toast.makeText(this, "Please select a Buyer Type", Toast.LENGTH_SHORT).show();
