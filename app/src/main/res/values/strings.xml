@@ -58,6 +58,14 @@
     <string name="farm_location">Farm Location</string>
     <string name="farm_size">Farm Size</string>
     <string name="city">City</string>
+    <string name="form_txt">Account Information</string>
+    <string name="spinner_txt">User Type</string>
+    <string name="buyer_details_title">Buyer Details</string>
+    <string name="buyer_spinner_hint">Buyer Type</string>
+    <string name="comp_type_hint">Company Type</string>
+    <string name="farm_details_txt">Farm Details</string>
+    <string name="login_txt">Already have an account?</string>
+    <string name="login_btn_txt">Sign In</string>
     <!-- view bid strings -->
 
     <string name="back_to_auctions">Back to Auctions</string>

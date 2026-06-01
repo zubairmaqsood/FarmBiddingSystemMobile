@@ -1,122 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
+    android:id="@+id/main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="@color/background_light"
+    android:fillViewport="true">
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <!--
+        fillViewport="true" is critical:
+        When the keyboard is hidden and content is short, it stretches
+        the ScrollView to fill the screen (so the layout looks centered).
+        When the keyboard appears, it becomes scrollable automatically.
+    -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.85">
+        android:minHeight="@dimen/min_screen_height"
+        android:paddingTop="@dimen/padding_xxlarge"
+        android:paddingBottom="@dimen/padding_xxlarge"
+        android:paddingStart="@dimen/padding_large"
+        android:paddingEnd="@dimen/padding_large">
 
+        <!-- Logo / Brand Icon -->
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:background="@color/farm_green"
+            android:backgroundTint="@color/farm_green"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Welcome Label -->
         <TextView
             android:id="@+id/txtWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/welcome"
-            android:textSize="@dimen/text_medium"
+            android:textSize="14sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/primary_green"
             android:textStyle="bold"
-            android:textColor="@color/primary_green" />
+            app:layout_constraintTop_toBottomOf="@id/imgLogo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Login Title -->
         <TextView
             android:id="@+id/txtLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="@string/login"
-            android:textSize="@dimen/text_large"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:layout_marginBottom="@dimen/margin_large" />
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/txtWelcome"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+
+        <!-- Card containing the form fields -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardForm"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_medium"
-            android:hint="@string/email_hint"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxStrokeColor="@color/farm_green"
-            app:hintTextColor="@color/farm_green"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp">
+            android:layout_marginTop="32dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/txtLogin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEmail"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:orientation="vertical"
+                android:padding="24dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <!-- Email Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email_hint"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxStrokeColor="@color/farm_green"
+                    app:hintTextColor="@color/farm_green"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_medium"
-            android:hint="@string/password_hint"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxStrokeColor="@color/farm_green"
-            app:hintTextColor="@color/farm_green"
-            app:endIconMode="password_toggle"
-            app:endIconTint="@color/farm_green"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionNext" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <!-- Password Field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/password_hint"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxStrokeColor="@color/farm_green"
+                    app:hintTextColor="@color/farm_green"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="@color/farm_green"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/login"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/primary_green"
-            app:cornerRadius="12dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionDone" />
 
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Forgot Password -->
+                <TextView
+                    android:id="@+id/txtForgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/forgot_password"
+                    android:textColor="@color/primary_green"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
+
+                <!-- Login Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/login"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    app:backgroundTint="@color/primary_green"
+                    app:cornerRadius="12dp"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Divider with OR -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/layoutDivider"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal"
-            android:layout_marginTop="24dp">
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/cardForm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#E0E0E0" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/signup_text"
                 android:textColor="#757575"
-                android:textSize="14sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/txtSignUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/signup_btn_txt"
-                android:layout_marginStart="6dp"
-                android:textColor="#1976D2"
+                android:textColor="@color/primary_green"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"
+                android:paddingStart="0dp"
+                android:paddingEnd="12dp"
                 android:background="?attr/selectableItemBackground" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#E0E0E0" />
+
         </LinearLayout>
 
-    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
