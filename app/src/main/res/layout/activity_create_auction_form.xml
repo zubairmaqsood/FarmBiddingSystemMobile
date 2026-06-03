@@ -1,51 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA">
+    android:background="@color/white">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <!-- HEADER — fixed, never scrolls -->
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="#F8F9FA"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backBtn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#212121"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Create New Auction"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#2E7D32" />
+
+    </LinearLayout>
+
+    <!-- SCROLL AREA — fills all space below header -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <ImageView
-                    android:id="@+id/backBtn"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@android:drawable/ic_menu_revert"
-                    app:tint="#212121"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:focusable="true"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Create New Auction"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="#2E7D32" />
-            </LinearLayout>
-
+            <!-- Card 1: Crop Info -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,15 +81,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Crop Category *"
+                        android:layout_marginBottom="12dp"
                         app:boxStrokeColor="#2E7D32"
-                        app:hintTextColor="#2E7D32"
-                        android:layout_marginBottom="12dp">
+                        app:hintTextColor="#2E7D32">
 
                         <AutoCompleteTextView
                             android:id="@+id/spinnerCategory"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none" />
+                            android:inputType="none"
+                            android:focusable="false" />
+
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -82,15 +99,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Item Name *"
+                        android:layout_marginBottom="12dp"
                         app:boxStrokeColor="#2E7D32"
-                        app:hintTextColor="#2E7D32"
-                        android:layout_marginBottom="12dp">
+                        app:hintTextColor="#2E7D32">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/aucTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textCapWords" />
+                            android:inputType="textCapWords"
+                            android:imeOptions="actionNext" />
+
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -107,11 +126,16 @@
                             android:layout_height="wrap_content"
                             android:gravity="top|start"
                             android:inputType="textMultiLine"
-                            android:lines="3" />
+                            android:lines="3"
+                            android:imeOptions="actionNext" />
+
                     </com.google.android.material.textfield.TextInputLayout>
+
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Card 2: Price & Quantity -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,7 +166,9 @@
                             android:id="@+id/basePrice"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="numberDecimal" />
+                            android:inputType="numberDecimal"
+                            android:imeOptions="actionNext" />
+
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -159,11 +185,16 @@
                             android:id="@+id/aucQty"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="numberDecimal" />
+                            android:inputType="numberDecimal"
+                            android:imeOptions="actionDone" />
+
                     </com.google.android.material.textfield.TextInputLayout>
+
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Card 3: Date & Image -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,15 +217,20 @@
                         android:layout_marginBottom="16dp"
                         android:hint="Auction End Date *"
                         app:boxStrokeColor="#2E7D32"
-                        app:hintTextColor="#2E7D32">
+                        app:hintTextColor="#2E7D32"
+                        app:endIconMode="custom"
+                        app:endIconDrawable="@android:drawable/ic_menu_my_calendar"
+                        app:endIconTint="#2E7D32">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/endTime"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusable="false"
+                            android:focusable="true"
                             android:clickable="true"
+                            android:cursorVisible="false"
                             android:inputType="none" />
+
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -203,7 +239,7 @@
                         android:text="Item Image *"
                         android:textStyle="bold"
                         android:textColor="#546E7A"
-                        android:layout_marginBottom="8dp"/>
+                        android:layout_marginBottom="8dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -219,8 +255,8 @@
                             android:layout_weight="1"
                             android:layout_marginEnd="8dp"
                             android:text="Camera"
-                            app:strokeColor="#2E7D32"
                             android:textColor="#2E7D32"
+                            app:strokeColor="#2E7D32"
                             app:icon="@android:drawable/ic_menu_camera"
                             app:iconTint="#2E7D32" />
 
@@ -232,10 +268,11 @@
                             android:layout_weight="1"
                             android:layout_marginStart="8dp"
                             android:text="Gallery"
-                            app:strokeColor="#1976D2"
                             android:textColor="#1976D2"
+                            app:strokeColor="#1976D2"
                             app:icon="@android:drawable/ic_menu_gallery"
                             app:iconTint="#1976D2" />
+
                     </LinearLayout>
 
                     <ImageView
@@ -246,9 +283,12 @@
                         android:scaleType="centerCrop"
                         android:visibility="gone"
                         android:background="#E0E0E0" />
+
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Publish Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCreateAuction"
                 android:layout_width="match_parent"
@@ -256,11 +296,13 @@
                 android:text="Publish Auction"
                 android:textSize="16sp"
                 android:textColor="@color/white"
+                android:layout_marginBottom="32dp"
                 app:backgroundTint="#2E7D32"
                 app:cornerRadius="8dp"
-                app:icon="@android:drawable/ic_menu_send"
-                android:layout_marginBottom="32dp"/>
+                app:icon="@android:drawable/ic_menu_send" />
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

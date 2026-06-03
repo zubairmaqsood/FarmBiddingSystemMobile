@@ -66,8 +66,12 @@
     <string name="farm_details_txt">Farm Details</string>
     <string name="login_txt">Already have an account?</string>
     <string name="login_btn_txt">Sign In</string>
+
     <!-- view bid strings -->
 
     <string name="back_to_auctions">Back to Auctions</string>
     <string name="place_bid">Place Bid Now</string>
+
+    <!--  Search Activity Strings  -->
+    <string name="search_hint">Search for crops</string>
 </resources>

@@ -27,7 +27,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Search for crops, cities..."
+                    android:hint="@string/search_hint"
                     app:boxStrokeColor="@color/farm_green"
                     app:hintTextColor="@color/farm_green"
                     app:startIconDrawable="@android:drawable/ic_menu_revert"
