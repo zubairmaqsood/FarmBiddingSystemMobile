@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.farmbiddingsystemmobile.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView; // Make sure to add this import
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

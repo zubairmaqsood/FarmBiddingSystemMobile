@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.farmbiddingsystemmobile.R;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class BidForm extends BottomSheetDialogFragment {

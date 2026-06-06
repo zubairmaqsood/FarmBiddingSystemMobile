@@ -1,17 +1,18 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id 'com.android.application' // 🔄 Cleaned up standard application plugin id
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
-    namespace 'com.example.farmbiddingsystem'
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    // 🔄 FIXED: Matches your actual project package path from your computer directory
+    namespace 'com.example.farmbiddingsystemmobile'
+
+    // 🔄 FIXED: Swapped out the broken syntax with the standard clean SDK assignment
+    compileSdk 36
 
     defaultConfig {
-        applicationId "com.example.farmbiddingsystem"
+        // 🔄 FIXED: Aligned with your actual package structure
+        applicationId "com.example.farmbiddingsystemmobile"
         minSdk 24
         targetSdk 36
         versionCode 1
@@ -20,12 +21,17 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -33,12 +39,16 @@ android {
 }
 
 dependencies {
-    implementation libs.appcompat
-    implementation libs.material
-    implementation libs.activity
-    implementation libs.constraintlayout
-    implementation("com.github.bumptech.glide:glide:5.0.7")
-    testImplementation libs.junit
-    androidTestImplementation libs.ext.junit
-    androidTestImplementation libs.espresso.core
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.activity:activity:1.8.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation "com.github.bumptech.glide:glide:4.16.0" // Standard stable declaration style
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // OkHttp for your AI Manager connections
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }

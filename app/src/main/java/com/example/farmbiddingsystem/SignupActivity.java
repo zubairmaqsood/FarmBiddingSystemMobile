@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.farmbiddingsystemmobile.R;
+
 public class SignupActivity extends AppCompatActivity {
 
     // Declare all UI elements
