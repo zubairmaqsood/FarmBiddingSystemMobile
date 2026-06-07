@@ -21,8 +21,7 @@ public class GeminiAI {
     private static final String API_KEY = BuildConfig.GEMINI_API_KEY;
 
     // The official Google Gemini 1.5 Flash endpoint
-    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
-
+    private static final String API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
