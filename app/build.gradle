@@ -4,20 +4,31 @@ plugins {
 
 android {
     namespace 'com.example.farmbiddingsystem'
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk 36 // <-- FIXED: Updated to 36 to match your dependencies
 
     defaultConfig {
         applicationId "com.example.farmbiddingsystem"
         minSdk 24
-        targetSdk 36
+        targetSdk 36 // <-- FIXED: Updated to 36
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Safely load the local.properties file
+        def localProps = new Properties()
+        def localPropertiesFile = project.rootProject.file('local.properties')
+        if (localPropertiesFile.exists()) {
+            localProps.load(localPropertiesFile.newDataInputStream())
+        }
+
+        def geminiApiKey = localProps.getProperty('GEMINI_API_KEY') ?: '""'
+        buildConfigField "String", "GEMINI_API_KEY", geminiApiKey
+    }
+
+    // MUST ENABLE THIS so Android generates the BuildConfig file for your key
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
