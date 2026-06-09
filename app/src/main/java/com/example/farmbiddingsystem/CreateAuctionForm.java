@@ -2,7 +2,10 @@ package com.example.farmbiddingsystem;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -33,13 +36,10 @@ public class CreateAuctionForm extends AppCompatActivity {
     private ImageView backBtn, imagePreview;
     private AutoCompleteTextView spinnerCategory;
     private TextInputEditText aucTitle, aucDesc, basePrice, aucQty, endTime;
-
-    // UI Buttons including our two new AI tools
     private MaterialButton btnCamera, btnGallery, btnCreateAuction, btnAiDescribe, btnAiSuggestPrice;
 
     private Uri selectedImageUri = null;
 
-    // 1. GALLERY LAUNCHER
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -50,7 +50,6 @@ public class CreateAuctionForm extends AppCompatActivity {
             }
     );
 
-    // 2. CAMERA LAUNCHER
     private final ActivityResultLauncher<Uri> cameraLauncher = registerForActivityResult(
             new ActivityResultContracts.TakePicture(),
             isSuccess -> {
@@ -65,7 +64,6 @@ public class CreateAuctionForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_auction_form);
 
-        // Find Views
         backBtn = findViewById(R.id.backBtn);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         aucTitle = findViewById(R.id.aucTitle);
@@ -77,27 +75,21 @@ public class CreateAuctionForm extends AppCompatActivity {
         btnGallery = findViewById(R.id.btnGallery);
         imagePreview = findViewById(R.id.imagePreview);
         btnCreateAuction = findViewById(R.id.btnCreateAuction);
-
-        // Find AI Buttons
         btnAiDescribe = findViewById(R.id.btnAiDescribe);
         btnAiSuggestPrice = findViewById(R.id.btnAiSuggestPrice);
 
-        // Set up basic click listeners
         backBtn.setOnClickListener(v -> finish());
         endTime.setOnClickListener(v -> showDatePicker());
 
-        // Setup Dropdown for Crop Categories
         String[] cropCategories = new String[]{"Wheat", "Rice (Basmati)", "Sugarcane", "Maize", "Vegetables (Mixed)", "Fruits", "Pulses"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, cropCategories);
         spinnerCategory.setAdapter(adapter);
 
-        // Open Gallery
         btnGallery.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(intent);
         });
 
-        // Open Camera
         btnCamera.setOnClickListener(v -> {
             selectedImageUri = createSecureFileUri();
             if (selectedImageUri != null) {
@@ -105,57 +97,50 @@ public class CreateAuctionForm extends AppCompatActivity {
             }
         });
 
-        // AI Feature 1: Description Generation
-        if (btnAiDescribe != null) {
-            btnAiDescribe.setOnClickListener(v -> generateAiDescription());
-        }
+        if (btnAiDescribe != null) btnAiDescribe.setOnClickListener(v -> generateAiDescription());
+        if (btnAiSuggestPrice != null) btnAiSuggestPrice.setOnClickListener(v -> suggestAiPrice());
 
-        // AI Feature 2: Price Suggestion
-        if (btnAiSuggestPrice != null) {
-            btnAiSuggestPrice.setOnClickListener(v -> suggestAiPrice());
-        }
-
-        // Final Submission
         btnCreateAuction.setOnClickListener(v -> validateAndSubmit());
     }
 
     // =====================================================================
-    // GEMINI AI INTEGRATION 1: Description Generator
+    // AI INTEGRATION 1: Multimodal Description Generator
     // =====================================================================
     private void generateAiDescription() {
         String category = spinnerCategory.getText().toString().trim();
         String title = aucTitle.getText().toString().trim();
 
-        // Validation: Ensure the farmer has filled out a title and category first
         if (category.isEmpty() || category.equals("Crop Category *")) {
             Toast.makeText(this, "Please select a Crop Category first", Toast.LENGTH_SHORT).show();
-            spinnerCategory.requestFocus();
             return;
         }
-
         if (title.isEmpty()) {
             aucTitle.setError("Please enter an Item Name first");
-            aucTitle.requestFocus();
             return;
         }
 
-        Toast.makeText(this, "Generating description with Gemini AI...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Analyzing image and generating description...", Toast.LENGTH_SHORT).show();
         btnAiDescribe.setEnabled(false);
 
-        String aiPrompt = "Act as an expert agricultural business marketer. Create a highly professional, " +
-                "appealing market description for a wholesale listing of " + title + " belonging to the category of " + category + ". " +
-                "Highlight factors like freshness, high farming quality, and good harvest standards. " +
-                "Keep the response professional, clean, and exactly 2 to 3 sentences long without markdown formatting or bullet points.";
+        // Fetch the actual image data
+        Bitmap imageBitmap = uriToBitmap(selectedImageUri);
+
+        // Update prompt to acknowledge the image
+        String aiPrompt = "Act as an expert agricultural business marketer. I have attached an image of the actual crop being sold. " +
+                "Analyze the visible condition, color, and freshness of the crop in the photo. " +
+                "Create a highly professional market description for a wholesale listing of " + title + " (" + category + "). " +
+                "Highlight the specific positive qualities you see in the image. " +
+                "Keep the response clean, exactly 2 to 3 sentences long, with no markdown or bullet points.";
 
         GeminiAI gemini = new GeminiAI();
-        gemini.generateText(aiPrompt, new GeminiAI.GeminiCallback() {
+        gemini.generateResponse(aiPrompt, imageBitmap, new GeminiAI.GeminiCallback() {
             @Override
             public void onSuccess(String response) {
                 runOnUiThread(() -> {
                     btnAiDescribe.setEnabled(true);
                     if (aucDesc != null) {
                         aucDesc.setText(response);
-                        Toast.makeText(CreateAuctionForm.this, "AI Description Generated!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateAuctionForm.this, "Visual AI Description Generated!", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -171,45 +156,44 @@ public class CreateAuctionForm extends AppCompatActivity {
     }
 
     // =====================================================================
-    // GEMINI AI INTEGRATION 2: Market Price Estimator
+    // AI INTEGRATION 2: Multimodal Live Market Price Estimator
     // =====================================================================
     private void suggestAiPrice() {
         String category = spinnerCategory.getText().toString().trim();
         String title = aucTitle.getText().toString().trim();
         String qtyStr = aucQty.getText().toString().trim();
 
-        // Ensure the farmer provided the item name and quantity before asking AI
         if (title.isEmpty() || qtyStr.isEmpty()) {
             Toast.makeText(this, "Please enter Item Name and Quantity first", Toast.LENGTH_SHORT).show();
-            if (title.isEmpty()) aucTitle.requestFocus();
-            else aucQty.requestFocus();
             return;
         }
 
         btnAiSuggestPrice.setEnabled(false);
-        Toast.makeText(this, "Analyzing live market rates...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Inspecting crop quality & fetching live rates...", Toast.LENGTH_SHORT).show();
 
-        // We ask Gemini to act as an agricultural financial analyst in Pakistan
-        String aiPrompt = "Act as an expert agricultural market analyst in Pakistan. " +
-                "A farmer is selling " + qtyStr + " KG of " + title + " in the " + category + " category. " +
-                "Calculate a realistic and highly competitive total starting base price in PKR (Rs) for this entire quantity. " +
-                "Reply with ONLY the raw integer number representing the total total. Do not include commas, the word 'Rs', or any other text.";
+        Bitmap imageBitmap = uriToBitmap(selectedImageUri);
+
+        // Instruct AI to base the price calculation heavily on the visual grade of the item
+        String aiPrompt = "Act as an expert agricultural market analyst and crop inspector in Pakistan. " +
+                "A farmer is selling " + qtyStr + " KG of " + title + " (" + category + "). " +
+                "I have attached an image of the specific crop batch. Visually assess the grade, freshness, and quality of the item in the picture. " +
+                "Then, search the live web for today's current wholesale Mandi rates in Pakistan. " +
+                "Based on the live rates AND the visual quality grade you determined from the image, calculate a fair total starting base price in PKR (Rs) for the entire " + qtyStr + " KG quantity. " +
+                "If the crop looks premium, apply a premium rate; if it looks average, apply standard rates. " +
+                "Reply with ONLY the final raw integer number representing the total value. Do not include commas, decimals, or 'Rs'.";
 
         GeminiAI gemini = new GeminiAI();
-        gemini.generateText(aiPrompt, new GeminiAI.GeminiCallback() {
+        gemini.generateResponse(aiPrompt, imageBitmap, new GeminiAI.GeminiCallback() {
             @Override
             public void onSuccess(String response) {
                 runOnUiThread(() -> {
                     btnAiSuggestPrice.setEnabled(true);
-
-                    // The AI might accidentally include text or commas, so we clean it to strictly numbers
                     String cleanNumber = response.replaceAll("[^0-9]", "");
-
                     if (!cleanNumber.isEmpty()) {
                         basePrice.setText(cleanNumber);
-                        Toast.makeText(CreateAuctionForm.this, "Best market price applied!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateAuctionForm.this, "Quality-adjusted live price applied!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(CreateAuctionForm.this, "Could not determine price. Please enter manually.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateAuctionForm.this, "Could not determine price.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -224,42 +208,49 @@ public class CreateAuctionForm extends AppCompatActivity {
         });
     }
 
-    // --- HELPER: Create a secure placeholder file for the camera ---
+    // --- HELPER: Safely convert URI to Bitmap for the AI ---
+    private Bitmap uriToBitmap(Uri uri) {
+        if (uri == null) return null;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                return ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), uri));
+            } else {
+                return MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private Uri createSecureFileUri() {
         try {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-            File imageFile = File.createTempFile(
-                    imageFileName,  /* prefix */
-                    ".jpg",         /* suffix */
-                    storageDir      /* directory */
-            );
-
+            File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
             return FileProvider.getUriForFile(this, "com.example.farmbiddingsystem.fileprovider", imageFile);
-
         } catch (IOException ex) {
             Toast.makeText(this, "Error creating image file", Toast.LENGTH_SHORT).show();
             return null;
         }
     }
 
-    // --- HELPER: Display the image using Glide ---
     private void showImagePreview() {
         imagePreview.setVisibility(View.VISIBLE);
-        Glide.with(this)
-                .load(selectedImageUri)
-                .into(imagePreview);
+        Glide.with(this).load(selectedImageUri).into(imagePreview);
     }
 
     private void showDatePicker() {
-        // Implement your DatePickerDialog here
-        // Example: Calendar logic to pop up a date dialog and set text to endTime
+        final Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year, month, day) -> endTime.setText(day + "/" + (month + 1) + "/" + year),
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        datePickerDialog.show();
     }
 
     private void validateAndSubmit() {
-        // Implement your validation and database (Firebase/MySQL) submission here
         Toast.makeText(this, "Auction Created Successfully!", Toast.LENGTH_SHORT).show();
         finish();
     }
