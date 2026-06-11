@@ -150,27 +150,16 @@
 
             </LinearLayout>
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLiveAuctions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:paddingHorizontal="@dimen/default_margin"
-                android:paddingTop="12dp"
-                android:clipToPadding="false">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <include layout="@layout/item_auction" />
-                    <include layout="@layout/item_auction" />
-                    <include layout="@layout/item_auction" />
-
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:orientation="horizontal"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <LinearLayout
+                android:id="@+id/layoutEndingSoonHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -188,24 +177,13 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvEndingAuctions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:paddingHorizontal="@dimen/default_margin"
-                android:paddingTop="12dp"
-                android:clipToPadding="false">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <include layout="@layout/item_auction" />
-                    <include layout="@layout/item_auction" />
-
-                </LinearLayout>
-            </HorizontalScrollView>
+                android:orientation="horizontal"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

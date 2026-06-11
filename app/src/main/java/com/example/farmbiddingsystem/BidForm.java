@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -17,6 +18,16 @@ public class BidForm extends BottomSheetDialogFragment {
 
         EditText etBidAmount = view.findViewById(R.id.etBidAmount);
         Button btnSubmitBid = view.findViewById(R.id.btnSubmitBid);
+        TextView cropName = view.findViewById(R.id.cropName);
+        TextView cropHighestBid = view.findViewById(R.id.cropHighestBid);
+
+        if(getArguments()!=null){
+            String aucTitle = getArguments().getString("Auction Title");
+            String aucHighestBid = getArguments().getString("Auction Price");
+
+            cropName.setText(aucTitle);
+            cropHighestBid.setText(aucHighestBid);
+        }
 
         btnSubmitBid.setOnClickListener(v -> {
             String bid = etBidAmount.getText().toString();

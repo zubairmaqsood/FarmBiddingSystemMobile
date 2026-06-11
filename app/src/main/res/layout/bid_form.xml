@@ -23,6 +23,15 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/cropName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Crop Name: Wheat"
+        android:textColor="#757575" />
+
+    <TextView
+        android:id="@+id/cropHighestBid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"

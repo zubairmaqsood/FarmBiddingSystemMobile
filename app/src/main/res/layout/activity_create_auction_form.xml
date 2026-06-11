@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Create New Auction"
+            android:text="@string/createAuctionTitle"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#2E7D32" />
@@ -80,7 +80,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Crop Category *"
+                        android:hint="@string/cropCatHint"
                         android:layout_marginBottom="12dp"
                         app:boxStrokeColor="#2E7D32"
                         app:hintTextColor="#2E7D32">
@@ -98,7 +98,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Item Name *"
+                        android:hint="@string/itemNameHint"
                         android:layout_marginBottom="12dp"
                         app:boxStrokeColor="#2E7D32"
                         app:hintTextColor="#2E7D32">
@@ -116,7 +116,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Description *"
+                        android:hint="@string/descHint"
                         app:boxStrokeColor="#2E7D32"
                         app:hintTextColor="#2E7D32">
 
@@ -158,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
-                        android:hint="Base Price (Rs) *"
+                        android:hint="@string/basePriceHint"
                         app:boxStrokeColor="#2E7D32"
                         app:hintTextColor="#2E7D32">
 
@@ -177,7 +177,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
-                        android:hint="Quantity (KG) *"
+                        android:hint="@string/qtyHint"
                         app:boxStrokeColor="#2E7D32"
                         app:hintTextColor="#2E7D32">
 
@@ -215,7 +215,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:hint="Auction End Date *"
+                        android:hint="@string/aucEndDateHint"
                         app:boxStrokeColor="#2E7D32"
                         app:hintTextColor="#2E7D32"
                         app:endIconMode="custom"
@@ -236,7 +236,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Item Image *"
+                        android:text="@string/aucImgTitle"
                         android:textStyle="bold"
                         android:textColor="#546E7A"
                         android:layout_marginBottom="8dp" />
@@ -254,7 +254,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginEnd="8dp"
-                            android:text="Camera"
+                            android:text="@string/aucCameraHint"
                             android:textColor="#2E7D32"
                             app:strokeColor="#2E7D32"
                             app:icon="@android:drawable/ic_menu_camera"
@@ -267,7 +267,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="8dp"
-                            android:text="Gallery"
+                            android:text="@string/aucGalleryHint"
                             android:textColor="#1976D2"
                             app:strokeColor="#1976D2"
                             app:icon="@android:drawable/ic_menu_gallery"
@@ -293,7 +293,7 @@
                 android:id="@+id/btnCreateAuction"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:text="Publish Auction"
+                android:text="@string/publishAucBtn"
                 android:textSize="16sp"
                 android:textColor="@color/white"
                 android:layout_marginBottom="32dp"

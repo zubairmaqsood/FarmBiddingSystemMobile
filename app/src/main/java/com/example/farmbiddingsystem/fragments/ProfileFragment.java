@@ -1,4 +1,4 @@
-    package com.example.farmbiddingsystem;
+    package com.example.farmbiddingsystem.fragments;
 
     import android.content.Intent;
     import android.os.Bundle;
@@ -9,6 +9,9 @@
     import android.view.View;
     import android.view.ViewGroup;
     import android.widget.TextView;
+
+    import com.example.farmbiddingsystem.EditProfileActivity;
+    import com.example.farmbiddingsystem.R;
 
     /**
      * A simple {@link Fragment} subclass.
@@ -67,7 +70,7 @@
             editProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(requireActivity(),EditProfileActivity.class));
+                    startActivity(new Intent(requireActivity(), EditProfileActivity.class));
                 }
             });
 

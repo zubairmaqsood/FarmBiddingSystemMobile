@@ -1,4 +1,4 @@
-package com.example.farmbiddingsystem; // Make sure this matches your package!
+package com.example.farmbiddingsystem.fragments; // Make sure this matches your package!
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.farmbiddingsystem.R;
 
 public class BidsFragment extends Fragment {
 
