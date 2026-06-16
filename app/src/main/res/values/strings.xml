@@ -17,6 +17,7 @@
     <string name="search_placeholder">Search for various crops…</string>
     <string name="bid_btn_txt">Bid Now</string>
     <string name="view_detail_btn_txt">View Details</string>
+    <string name="no_auc_msg">No active auctions at the moment.</string>
 
     <!--  Bid Form Strings  -->
     <string name="bid_form_header">Place Your Bid</string>

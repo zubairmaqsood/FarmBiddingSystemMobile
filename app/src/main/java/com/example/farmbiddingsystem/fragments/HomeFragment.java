@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,25 +26,31 @@ import com.example.farmbiddingsystem.SearchActivity;
 import com.example.farmbiddingsystem.ViewAuction;
 import com.example.farmbiddingsystem.adapters.AuctionAdapter;
 import com.example.farmbiddingsystem.models.AuctionModel;
+import com.example.farmbiddingsystem.network.ApiClient;
+import com.example.farmbiddingsystem.network.ApiService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class HomeFragment extends Fragment {
 
     // --- MASTER DATA & UI LISTS ---
     private List<AuctionModel> allAuctions = new ArrayList<>();
 
-    // We don't store the regular/ending lists here anymore.
-    // We generate them fresh every second and hand them to the Adapters via DiffUtil!
     private AuctionAdapter regularAdapter;
     private AuctionAdapter endingAdapter;
 
     // --- REAL-TIME TICKER ---
     private final Handler tickerHandler = new Handler(Looper.getMainLooper());
     private View layoutEndingSoonHeader;
+    private View tvLiveHeader;
+    private TextView tvEmptyState;
     private RecyclerView rvEnding;
     private RecyclerView rvLive;
 
@@ -74,49 +83,10 @@ public class HomeFragment extends Fragment {
         rvLive = view.findViewById(R.id.rvLiveAuctions);
         rvEnding = view.findViewById(R.id.rvEndingAuctions);
         layoutEndingSoonHeader = view.findViewById(R.id.layoutEndingSoonHeader);
+        tvLiveHeader = view.findViewById(R.id.tvLiveHeader); // Make sure this ID matches your XML
+        tvEmptyState = view.findViewById(R.id.tvEmptyState); // Make sure this ID matches your XML
 
-        // 3. LOAD MASTER DATA (Dummy Data - Use dates in the future so you can see it work!)
-        allAuctions.clear();
-        // Ends in exactly 24 Hours (June 12, 2:18 PM)
-        allAuctions.add(new AuctionModel(1, 101, "Tomorrow's Wheat", "Safely in the Live section.", "",
-                100.0, 1000.0, "Live", 0.0, 0,
-                "2026-06-10 10:00:00", "2026-06-12 14:18:00", 0, "Farmer Ali"));
-
-        // Ends in exactly 5 Hours (June 11, 7:18 PM)
-        allAuctions.add(new AuctionModel(2, 102, "Evening Corn", "Safely in the Live section.", "",
-                200.0, 2000.0, "Live", 2100.0, 301,
-                "2026-06-10 10:00:00", "2026-06-11 19:18:00", 1, "Farmer Usman"));
-
-
-        // ==========================================
-        // CASE 2: ENDING SOON AUCTIONS (< 3 Hours)
-        // ==========================================
-
-        // Ends in exactly 2 Hours (June 11, 4:18 PM)
-        allAuctions.add(new AuctionModel(3, 103, "Afternoon Rice", "Already in Ending Soon.", "",
-                300.0, 3000.0, "Live", 3500.0, 302,
-                "2026-06-10 10:00:00", "2026-06-11 16:18:00", 4, "Farmer Raza"));
-
-        // Ends in exactly 5 Minutes (June 11, 2:23 PM) -> Quick expiration test!
-        allAuctions.add(new AuctionModel(4, 104, "Expiring Onion", "Watch this expire and disappear!", "",
-                400.0, 4000.0, "Live", 4000.0, 0,
-                "2026-06-10 10:00:00", "2026-06-11 14:23:00", 0, "Farmer Tariq"));
-
-
-        // ==========================================
-        // CASE 3: THE SWAP TESTER (3 Hours + 10 Seconds)
-        // ==========================================
-
-        // Ends exactly at 5:33:00 PM today.
-        // Since it is currently around 2:31 PM, this auction has about 3 hours and 2 minutes left.
-        // It will start in the top "Live Auctions" list with a green timer.
-        // Watch it tick down. The exact second it hits "03h 00m 00s",
-        // it will magically jump to the bottom "Ending Soon" list and turn red!
-        allAuctions.add(new AuctionModel(5, 105, "The Swap Test", "Watch this jump to the bottom!", "",
-                500.0, 5000.0, "Live", 5500.0, 305,
-                "2026-06-10 10:00:00", "2026-06-11 17:33:00", 2, "Farmer Ahmed"));
-
-        // 4. COMMON CLICK LISTENER
+        // 3. COMMON CLICK LISTENER
         AuctionAdapter.OnAuctionClickListener commonClickListener = new AuctionAdapter.OnAuctionClickListener() {
             @Override
             public void onBidClick(AuctionModel auction) {
@@ -135,7 +105,7 @@ public class HomeFragment extends Fragment {
             }
         };
 
-        // 5. ADAPTER SETUP (Start with empty lists, the Ticker will instantly fill them)
+        // 4. ADAPTER SETUP
         regularAdapter = new AuctionAdapter(new ArrayList<>(), commonClickListener);
         rvLive.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvLive.setAdapter(regularAdapter);
@@ -144,18 +114,43 @@ public class HomeFragment extends Fragment {
         rvEnding.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvEnding.setAdapter(endingAdapter);
 
-        // 6. SEARCH BAR SETUP
+        // 5. SEARCH BAR SETUP
         EditText editSearch = view.findViewById(R.id.editSearch);
         editSearch.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), SearchActivity.class);
             startActivity(intent);
         });
 
-        // 7. START REAL-TIME TICKER
+        // 6. FETCH REAL DATA FROM VERCEL
         updateAuctionsRealTime();
-        tickerHandler.postDelayed(tickerRunnable, 1000);
+        fetchLiveAuctions();
 
         return view;
+    }
+
+    private void fetchLiveAuctions() {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        apiService.getHomePageAuctions().enqueue(new Callback<List<AuctionModel>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<AuctionModel>> call, @NonNull Response<List<AuctionModel>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Update master list with live data
+                    allAuctions = response.body();
+
+                    // Start the ticker immediately after data arrives
+                    updateAuctionsRealTime();
+                    tickerHandler.postDelayed(tickerRunnable, 1000);
+                } else {
+                    Toast.makeText(getContext(), "Failed to fetch auctions.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<AuctionModel>> call, @NonNull Throwable t) {
+                Log.e("HOME_API", "Network Error: " + t.getMessage());
+                Toast.makeText(getContext(), "Server unreachable. Check internet.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // --- REAL-TIME LOOP LOGIC ---
@@ -168,15 +163,26 @@ public class HomeFragment extends Fragment {
     };
 
     private void updateAuctionsRealTime() {
+        // STATE 1: Empty Master List (No auctions at all)
+        if (allAuctions == null || allAuctions.isEmpty()) {
+            tvEmptyState.setVisibility(View.VISIBLE);
+            tvLiveHeader.setVisibility(View.GONE);
+            rvLive.setVisibility(View.GONE);
+            layoutEndingSoonHeader.setVisibility(View.GONE);
+            rvEnding.setVisibility(View.GONE);
+            return;
+        }
+
+        // STATE 2: We have data, hide empty state text
+        tvEmptyState.setVisibility(View.GONE);
+
         long now = System.currentTimeMillis();
         long THREE_HOURS_MS = 3 * 60 * 60 * 1000;
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault());
 
-        // Create fresh lists for DiffUtil to compare against
         List<AuctionModel> newRegularList = new ArrayList<>();
         List<AuctionModel> newEndingList = new ArrayList<>();
 
-        // Use Iterator to safely remove expired items from the master list while looping
         Iterator<AuctionModel> iterator = allAuctions.iterator();
         while (iterator.hasNext()) {
             AuctionModel auction = iterator.next();
@@ -184,17 +190,13 @@ public class HomeFragment extends Fragment {
                 java.util.Date endDate = sdf.parse(auction.getEndTime());
                 if (endDate != null) {
                     long diff = endDate.getTime() - now;
-                    long diffInHours = diff / (1000 * 60 * 60);
 
                     if (diff <= 0) {
-                        // EXPIRED: Remove completely
-                        iterator.remove();
+                        iterator.remove(); // Remove expired
                     } else if (diff <= THREE_HOURS_MS) {
-                        // ENDING SOON: Add to fresh ending list
-                        newEndingList.add(auction);
+                        newEndingList.add(auction); // Ending Soon
                     } else {
-                        // LIVE AUCTION: Add to fresh regular list
-                        newRegularList.add(auction);
+                        newRegularList.add(auction); // Regular Live
                     }
                 }
             } catch (java.text.ParseException e) {
@@ -202,7 +204,7 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        // Send the fresh lists to the Adapters (They will handle the DiffUtil logic internally!)
+        // Update Adapters
         if (regularAdapter != null) {
             regularAdapter.updateList(newRegularList);
             regularAdapter.notifyItemRangeChanged(0, regularAdapter.getItemCount(), "TICK_UPDATE");
@@ -212,13 +214,31 @@ public class HomeFragment extends Fragment {
             endingAdapter.notifyItemRangeChanged(0, endingAdapter.getItemCount(), "TICK_UPDATE");
         }
 
-        // Toggle UI Visibility based on the new ending list
+        // Toggle UI Visibility based on Ending Soon list
         if (newEndingList.isEmpty()) {
             layoutEndingSoonHeader.setVisibility(View.GONE);
             rvEnding.setVisibility(View.GONE);
         } else {
             layoutEndingSoonHeader.setVisibility(View.VISIBLE);
             rvEnding.setVisibility(View.VISIBLE);
+        }
+
+        // Toggle UI Visibility based on Regular Live list
+        if (newRegularList.isEmpty()) {
+            tvLiveHeader.setVisibility(View.GONE);
+            rvLive.setVisibility(View.GONE);
+        } else {
+            tvLiveHeader.setVisibility(View.VISIBLE);
+            rvLive.setVisibility(View.VISIBLE);
+        }
+
+        // Final check: If all auctions just expired on this exact tick
+        if (allAuctions.isEmpty()) {
+            tvEmptyState.setVisibility(View.VISIBLE);
+            tvLiveHeader.setVisibility(View.GONE);
+            rvLive.setVisibility(View.GONE);
+            layoutEndingSoonHeader.setVisibility(View.GONE);
+            rvEnding.setVisibility(View.GONE);
         }
     }
 
@@ -227,7 +247,7 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         sliderHandler.removeCallbacks(sliderRunnable);
-        tickerHandler.removeCallbacks(tickerRunnable); // Crucial to prevent battery drain
+        tickerHandler.removeCallbacks(tickerRunnable);
     }
 
     // --- CAROUSEL RUNNABLE ---
@@ -246,7 +266,6 @@ public class HomeFragment extends Fragment {
 
     // --- CAROUSEL ADAPTER ---
     class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerViewHolder> {
-        // [Keep your exact BannerAdapter code here...]
         private final List<Integer> imageList;
         BannerAdapter(List<Integer> imageList) { this.imageList = imageList; }
         @NonNull @Override public BannerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

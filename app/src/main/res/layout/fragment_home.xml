@@ -139,6 +139,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
+                    android:id="@+id/tvLiveHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -185,7 +186,19 @@
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+            <TextView
+                android:id="@+id/tvEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_auc_msg"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:visibility="gone"
+                android:layout_marginTop="32dp" />
+
         </LinearLayout>
+
+
     </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

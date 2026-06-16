@@ -1,46 +1,72 @@
 package com.example.farmbiddingsystem.models;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * AuctionModel — mirrors the auctions table + farmer name from users table.
  *
- * Database source:
- *   auctions  → auc_id, user_id, auc_title, auc_desc, image_path,
- *               auc_qty, base_price, auc_status, highest_bid,
- *               highest_bidder_id, start_time, end_time, bid_count
- *   users     → user_name (joined by auctions.user_id = users.user_id)
- *
- * Note: 'registry_file_name' from farmers table is not included here
- * because it is an admin/verification field, not displayed in the app UI.
+ * This single model handles responses from both homepage.php and myBid.php!
+ * If an API doesn't send a specific field (like my_bid), Gson safely ignores it.
  */
 public class AuctionModel {
 
     // From auctions table
-    private int    aucId;
-    private int    userId;           // farmer's user_id (FK → farmers.user_id)
+    @SerializedName("auc_id")
+    private int aucId;
+
+    @SerializedName("user_id")
+    private int userId;
+
+    @SerializedName("auc_title")
     private String aucTitle;
+
+    @SerializedName("auc_desc")
     private String aucDesc;
+
+    @SerializedName("image_path")
     private String imagePath;
+
+    @SerializedName("auc_qty")
     private double aucQty;
+
+    @SerializedName("base_price")
     private double basePrice;
-    private String aucStatus;        // "Live" or "Expired"
+
+    @SerializedName("auc_status")
+    private String aucStatus;
+
+    @SerializedName("highest_bid")
     private double highestBid;
-    private int    highestBidderId;  // FK → buyers.user_id (0 if no bids yet)
-    private String startTime;        // DATETIME as String; format: "yyyy-MM-dd HH:mm:ss"
-    private String endTime;          // DATETIME as String; format: "yyyy-MM-dd HH:mm:ss"
-    private int    bidCount;
+
+    @SerializedName("highest_bidder_id")
+    private int highestBidderId;
+
+    @SerializedName("start_time")
+    private String startTime;
+
+    @SerializedName("end_time")
+    private String endTime;
+
+    @SerializedName("bid_count")
+    private int bidCount;
 
     // From users table (joined — farmer's display name)
-    private String farmerName;       // users.user_name WHERE users.user_id = auctions.user_id
+    @SerializedName("farmer_name")
+    private String farmerName;
+
+    // --- NEW: Specifically for the Buyer's "My Bids" screen ---
+    @SerializedName("my_bid")
+    private double myBid;
 
 
     // ─────────────────────────────────────────
-    // Constructor — used when building from API/database response
+    // Constructor
     // ─────────────────────────────────────────
     public AuctionModel(int aucId, int userId, String aucTitle, String aucDesc,
                         String imagePath, double aucQty, double basePrice,
                         String aucStatus, double highestBid, int highestBidderId,
                         String startTime, String endTime, int bidCount,
-                        String farmerName) {
+                        String farmerName, double myBid) {
 
         this.aucId           = aucId;
         this.userId          = userId;
@@ -56,10 +82,11 @@ public class AuctionModel {
         this.endTime         = endTime;
         this.bidCount        = bidCount;
         this.farmerName      = farmerName;
+        this.myBid           = myBid;
     }
 
     // ─────────────────────────────────────────
-    // Empty constructor — needed for JSON parsing libraries (Gson, Retrofit)
+    // Empty constructor — needed for Gson / Retrofit
     // ─────────────────────────────────────────
     public AuctionModel() {}
 
@@ -81,10 +108,11 @@ public class AuctionModel {
     public String getEndTime()         { return endTime; }
     public int    getBidCount()        { return bidCount; }
     public String getFarmerName()      { return farmerName; }
+    public double getMyBid()           { return myBid; } // New Getter!
 
 
     // ─────────────────────────────────────────
-    // Setters — needed when updating from live data (e.g. new bid placed)
+    // Setters
     // ─────────────────────────────────────────
     public void setAucId(int aucId)                   { this.aucId = aucId; }
     public void setUserId(int userId)                 { this.userId = userId; }
@@ -100,22 +128,20 @@ public class AuctionModel {
     public void setEndTime(String endTime)            { this.endTime = endTime; }
     public void setBidCount(int bidCount)             { this.bidCount = bidCount; }
     public void setFarmerName(String farmerName)      { this.farmerName = farmerName; }
+    public void setMyBid(double myBid)                { this.myBid = myBid; } // New Setter!
 
 
     // ─────────────────────────────────────────
-    // Helper — tells you if this auction is still live
+    // Helpers
     // ─────────────────────────────────────────
     public boolean isLive() {
         return "Live".equalsIgnoreCase(aucStatus);
     }
 
-    // Helper — tells you if any bids have been placed
     public boolean hasBids() {
         return bidCount > 0;
     }
 
-    // Helper — returns highest bid if exists, otherwise base price
-    // Useful for displaying "current price" on the card
     public double getCurrentPrice() {
         return hasBids() ? highestBid : basePrice;
     }
