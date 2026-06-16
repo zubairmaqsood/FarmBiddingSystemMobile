@@ -39,6 +39,10 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.glide
     implementation libs.recyclerview
+    // Retrofit core library
+    implementation libs.retrofit
+    // Converter library to automatically parse JSON into Java Objects
+    implementation(libs.converter.gson)
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
