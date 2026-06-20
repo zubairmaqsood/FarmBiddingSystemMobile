@@ -28,6 +28,7 @@ import com.example.farmbiddingsystem.adapters.AuctionAdapter;
 import com.example.farmbiddingsystem.models.AuctionModel;
 import com.example.farmbiddingsystem.network.ApiClient;
 import com.example.farmbiddingsystem.network.ApiService;
+import com.example.farmbiddingsystem.utils.AuctionDataHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -137,6 +138,7 @@ public class HomeFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     // Update master list with live data
                     allAuctions = response.body();
+                    AuctionDataHolder.getInstance().setMasterList(allAuctions);
 
                     // Start the ticker immediately after data arrives
                     updateAuctionsRealTime();
