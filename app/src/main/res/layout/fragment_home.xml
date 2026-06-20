@@ -39,7 +39,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:contentDescription="@string/header_img_desc"
-                    android:src="@drawable/logo" />
+                    android:src="@drawable/ic_app_logo" />
             </androidx.cardview.widget.CardView>
 
             <TextView

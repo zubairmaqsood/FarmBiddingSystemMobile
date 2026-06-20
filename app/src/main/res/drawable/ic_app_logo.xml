@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ic_sunrise_farm.xml
+    Original sunrise-over-farmland badge icon (not a copy of any
+    copyrighted stock asset — independently designed).
+
+    Place this file in: res/drawable/ic_sunrise_farm.xml
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Outer ring -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#E8742C"
+        android:strokeWidth="9"
+        android:pathData="M100,8 A92,92 0 1,1 99.9,8 Z" />
+
+    <!-- Sunburst rays -->
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M100,30 L104,52 L96,52 Z" />
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M73,37 L82,57 L74,60 Z" />
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M127,37 L118,57 L126,60 Z" />
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M52,55 L68,70 L62,76 Z" />
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M148,55 L132,70 L138,76 Z" />
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M38,80 L58,88 L56,96 Z" />
+    <path
+        android:fillColor="#F5A623"
+        android:pathData="M162,80 L142,88 L144,96 Z" />
+
+    <!-- Sun circle -->
+    <path
+        android:fillColor="#FBC02D"
+        android:pathData="M100,66 A34,34 0 1,1 99.9,66 Z" />
+
+    <!-- Back hill -->
+    <path
+        android:fillColor="#43A047"
+        android:pathData="M30,130 C55,110 75,150 100,128 C125,106 145,146 170,128 L170,178 L30,178 Z" />
+
+    <!-- Front hill -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M30,150 C55,134 75,164 100,148 C125,132 145,162 170,148 L170,178 L30,178 Z" />
+
+</vector>

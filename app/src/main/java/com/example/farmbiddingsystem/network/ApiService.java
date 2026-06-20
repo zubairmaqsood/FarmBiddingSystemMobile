@@ -20,16 +20,10 @@ public interface ApiService {
     @POST("login.php")
     Call<Map<String, Object>> loginUser(@Field("email") String email,@Field("password") String password);
 
-    // Example 2: Fetching live auctions list for your home page
-    @GET("homePage.php")
-    Call<List<Map<String, Object>>> getAuctions();
-
     @GET("myBid.php")
     Call<BidsResponse> getMyBids(@Header("Authorization") String token);
 
     @GET("homePage.php")
     Call<List<AuctionModel>> getHomePageAuctions();
 
-    @GET("search.php")
-    Call<List<AuctionModel>> searchAuctions(@Query("query") String searchQuery);
 }

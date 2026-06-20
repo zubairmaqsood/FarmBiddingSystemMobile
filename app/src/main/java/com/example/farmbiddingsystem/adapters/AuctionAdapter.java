@@ -15,11 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.farmbiddingsystem.R;
 import com.example.farmbiddingsystem.models.AuctionModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AuctionAdapter extends RecyclerView.Adapter<AuctionAdapter.ViewHolder> {
 
     private List<AuctionModel> auctionList;
+
     private OnAuctionClickListener listener;
 
     public interface OnAuctionClickListener {
@@ -31,6 +33,7 @@ public class AuctionAdapter extends RecyclerView.Adapter<AuctionAdapter.ViewHold
         this.auctionList = auctionList;
         this.listener = listener;
     }
+
 
     @NonNull
     @Override

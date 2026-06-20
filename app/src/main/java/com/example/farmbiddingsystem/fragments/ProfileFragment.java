@@ -10,7 +10,6 @@
     import android.view.ViewGroup;
     import android.widget.TextView;
 
-    import com.example.farmbiddingsystem.EditProfileActivity;
     import com.example.farmbiddingsystem.R;
 
     /**

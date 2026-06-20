@@ -119,7 +119,7 @@ public class SearchActivity extends AppCompatActivity {
                     if (query.isEmpty()) {
                         clearSearch("Start typing to search...");
                     } else {
-                        performNetworkSearch(query);
+                        performSearch(query);
                     }
                 };
 
@@ -129,7 +129,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    private void performNetworkSearch(String query) {
+    private void performSearch(String query) {
         // 1. Cancel any slow, older API calls that might still be flying through the internet
         if (currentApiCall != null && !currentApiCall.isExecuted()) {
             currentApiCall.cancel();
