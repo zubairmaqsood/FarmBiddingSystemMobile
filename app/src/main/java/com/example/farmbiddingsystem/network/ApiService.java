@@ -11,6 +11,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -26,6 +27,9 @@ public interface ApiService {
     @GET("myBid.php")
     Call<BidsResponse> getMyBids(@Header("Authorization") String token);
 
-    @GET("homepage.php")
+    @GET("homePage.php")
     Call<List<AuctionModel>> getHomePageAuctions();
+
+    @GET("search.php")
+    Call<List<AuctionModel>> searchAuctions(@Query("query") String searchQuery);
 }

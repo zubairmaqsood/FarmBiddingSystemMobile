@@ -133,6 +133,7 @@ public class HomeFragment extends Fragment {
         apiService.getHomePageAuctions().enqueue(new Callback<List<AuctionModel>>() {
             @Override
             public void onResponse(@NonNull Call<List<AuctionModel>> call, @NonNull Response<List<AuctionModel>> response) {
+
                 if (response.isSuccessful() && response.body() != null) {
                     // Update master list with live data
                     allAuctions = response.body();
@@ -141,7 +142,14 @@ public class HomeFragment extends Fragment {
                     updateAuctionsRealTime();
                     tickerHandler.postDelayed(tickerRunnable, 1000);
                 } else {
-                    Toast.makeText(getContext(), "Failed to fetch auctions.", Toast.LENGTH_SHORT).show();
+                    try {
+                        // This grabs the exact error message sent by your PHP catch block!
+                        String errorMsg = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                        Log.e("HOME_API_ERROR", "Server rejected request: " + errorMsg);
+                        Toast.makeText(getContext(), "Server Error: See Logcat", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

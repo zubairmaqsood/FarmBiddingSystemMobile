@@ -75,6 +75,7 @@
 
     <!--  Search Activity Strings  -->
     <string name="search_hint">Search for crops</string>
+    <string name="search_txt">Start typing to search...</string>
 
 
     <!-- Create Auction Strings   -->
