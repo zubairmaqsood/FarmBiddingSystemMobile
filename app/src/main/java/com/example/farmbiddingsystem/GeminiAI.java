@@ -21,7 +21,9 @@ import java.util.concurrent.Executors;
 public class GeminiAI {
 
     private static final String API_KEY = BuildConfig.GEMINI_API_KEY;
-    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=" + API_KEY;
+
+    // 👉 FIX 1: Changed "3.5-flash" to "1.5-flash" (the correct working model)
+    private static final String API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -31,7 +33,10 @@ public class GeminiAI {
         void onError(String error);
     }
 
-    // 👉 NEW: Now accepts a Bitmap image along with the text prompt!
+    public void generateText(String prompt, GeminiCallback callback) {
+        generateResponse(prompt, null, callback);
+    }
+
     public void generateResponse(String prompt, Bitmap image, GeminiCallback callback) {
         executor.execute(() -> {
             try {
@@ -43,21 +48,16 @@ public class GeminiAI {
 
                 JSONArray partsArray = new JSONArray();
 
-                // 1. Add the Text Prompt
                 JSONObject textPart = new JSONObject();
                 textPart.put("text", prompt);
                 partsArray.put(textPart);
 
-                // 2. Add the Image (If the farmer uploaded one)
                 if (image != null) {
-                    // Convert Bitmap to Base64 String
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    // Compress image slightly to ensure fast network uploads
                     image.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
                     byte[] byteArray = byteArrayOutputStream.toByteArray();
                     String base64Image = Base64.encodeToString(byteArray, Base64.NO_WRAP);
 
-                    // Build the Image JSON object required by Gemini
                     JSONObject inlineData = new JSONObject();
                     inlineData.put("mime_type", "image/jpeg");
                     inlineData.put("data", base64Image);
@@ -77,14 +77,14 @@ public class GeminiAI {
                 JSONObject payload = new JSONObject();
                 payload.put("contents", contentsArray);
 
-                // Retain Google Search Grounding for live web browsing
-                JSONObject googleSearchTool = new JSONObject();
+                // 👉 FIX 2: Commented out the Google Search Tool to stop the 429 Rate Limits!
+                /* JSONObject googleSearchTool = new JSONObject();
                 googleSearchTool.put("googleSearch", new JSONObject());
                 JSONArray toolsArray = new JSONArray();
                 toolsArray.put(googleSearchTool);
                 payload.put("tools", toolsArray);
+                */
 
-                // Send the request
                 OutputStream os = connection.getOutputStream();
                 os.write(payload.toString().getBytes("UTF-8"));
                 os.close();
@@ -110,7 +110,7 @@ public class GeminiAI {
 
                     mainHandler.post(() -> callback.onSuccess(extractedText.trim()));
                 } else if (responseCode == 429) {
-                    mainHandler.post(() -> callback.onError("Server busy (429). Please wait 60 seconds."));
+                    mainHandler.post(() -> callback.onError("Server busy (429). You have hit your Google daily limit."));
                 } else {
                     mainHandler.post(() -> callback.onError("Error Code: " + responseCode));
                 }
