@@ -1,75 +1,150 @@
 package com.example.farmbiddingsystem;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.farmbiddingsystem.adapters.SearchAdapter;
+import com.example.farmbiddingsystem.models.AuctionModel;
+import com.example.farmbiddingsystem.utils.AuctionDataHolder; // Import the bridge
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
 
     private TextInputLayout tilSearchBox;
     private TextInputEditText etRealSearch;
     private RecyclerView recyclerSearchResults;
+    private TextView tvSearchStatus;
+
+    private SearchAdapter searchAdapter;
+
+    private final Handler tickerHandler = new Handler(android.os.Looper.getMainLooper());
+    private Runnable tickerRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         // 1. Find the views
         tilSearchBox = findViewById(R.id.tilSearchBox);
         etRealSearch = findViewById(R.id.etRealSearch);
         recyclerSearchResults = findViewById(R.id.recyclerSearchResults);
+        tvSearchStatus = findViewById(R.id.tvSearchStatus);
 
-        // 2. The "Back Arrow" Logic
-        // When the user clicks the arrow inside the search bar, destroy this activity
-        tilSearchBox.setStartIconOnClickListener(v -> {
-            finish(); // Returns smoothly to the HomeFragment
-        });
+        recyclerSearchResults.setLayoutManager(new GridLayoutManager(this,2));
 
-        // 3. THE KEYBOARD MAGIC
-        // Request focus on the EditText immediately
+        SearchAdapter.OnAuctionClickListener clickListener = new SearchAdapter.OnAuctionClickListener() {
+            @Override
+            public void onBidClick(AuctionModel auction) {
+                BidForm bidSheet = new BidForm();
+                Bundle bundle = new Bundle();
+                bundle.putString("Auction Title", "Crop Name: " + auction.getAucTitle());
+                bundle.putString("Auction Price", "Current Highest Bid: Rs " + auction.getCurrentPrice());
+                bidSheet.setArguments(bundle);
+                bidSheet.show(getSupportFragmentManager(), "BidForm");
+            }
+
+            @Override
+            public void onViewDetailsClick(AuctionModel auction) {
+                Intent intent = new Intent(SearchActivity.this, ViewAuction.class);
+                startActivity(intent);
+            }
+        };
+
+        // 2. GRAB THE DATA INSTANTLY FROM THE BRIDGE (Zero API calls)
+        List<AuctionModel> arrivedAuctions = AuctionDataHolder.getInstance().getMasterList();
+
+        searchAdapter = new SearchAdapter(arrivedAuctions, clickListener);
+        recyclerSearchResults.setAdapter(searchAdapter);
+
+        // If the vault is empty (maybe the user opened search before homepage loaded), let them know
+        if (arrivedAuctions.isEmpty()) {
+            tvSearchStatus.setVisibility(View.VISIBLE);
+            tvSearchStatus.setText("No live auctions available to search.");
+        } else {
+            tvSearchStatus.setVisibility(View.GONE);
+        }
+
+        // 3. UI Flow Magic (Back Arrow & Keyboard)
+        tilSearchBox.setStartIconOnClickListener(v -> finish());
+
         etRealSearch.requestFocus();
-
-        // Tell the Android system to slide the keyboard up
         etRealSearch.post(() -> {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.showSoftInput(etRealSearch, InputMethodManager.SHOW_IMPLICIT);
+            if (imm != null) imm.showSoftInput(etRealSearch, InputMethodManager.SHOW_IMPLICIT);
+        });
+
+        // 4. INSTANT LOCAL FILTERING
+        etRealSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String query = s.toString().trim();
+
+                searchAdapter.filter(query);
+
+                if (searchAdapter.getItemCount() == 0 && !query.isEmpty()) {
+                    tvSearchStatus.setVisibility(View.VISIBLE);
+                    tvSearchStatus.setText("No crops found matching '" + query + "'");
+                } else if (arrivedAuctions.isEmpty()) {
+                    tvSearchStatus.setVisibility(View.VISIBLE);
+                    tvSearchStatus.setText("No live auctions available to search.");
+                } else {
+                    tvSearchStatus.setVisibility(View.GONE);
+                }
             }
         });
 
-        // 4. (Optional for now) Listen to what the user types!
-        etRealSearch.setOnEditorActionListener((v, actionId, event) -> {
-            String query = etRealSearch.getText().toString();
-            // In the future, you will send this 'query' variable to your database
-            // to fetch results and put them into the recyclerSearchResults!
-            return false;
-        });
+        tickerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (searchAdapter != null && searchAdapter.getItemCount() > 0) {
+                    // Send the "TICK_UPDATE" payload to every visible item on the screen
+                    searchAdapter.notifyItemRangeChanged(0, searchAdapter.getItemCount(), "TICK_UPDATE");
+                }
+                // Loop this again in 1000 milliseconds (1 second)
+                tickerHandler.postDelayed(this, 1000);
+            }
+        };
+        // Start the heartbeat!
+        tickerHandler.post(tickerRunnable);
     }
 
-    // Safety check: if the user uses the phone's physical back swipe, hide the keyboard smoothly
     @Override
     protected void onPause() {
         super.onPause();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(etRealSearch.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Kill the heartbeat when the activity dies so it doesn't drain the battery
+        if (tickerRunnable != null) {
+            tickerHandler.removeCallbacks(tickerRunnable);
         }
     }
 }

@@ -17,6 +17,7 @@
     <string name="search_placeholder">Search for various crops…</string>
     <string name="bid_btn_txt">Bid Now</string>
     <string name="view_detail_btn_txt">View Details</string>
+    <string name="no_auc_msg">No active auctions at the moment.</string>
 
     <!--  Bid Form Strings  -->
     <string name="bid_form_header">Place Your Bid</string>
@@ -74,4 +75,19 @@
 
     <!--  Search Activity Strings  -->
     <string name="search_hint">Search for crops</string>
+    <string name="search_txt">Start typing to search...</string>
+
+
+    <!-- Create Auction Strings   -->
+    <string name="createAuctionTitle">Create New Auction</string>
+    <string name="cropCatHint">Crop Category *</string>
+    <string name="itemNameHint">Item Name *</string>
+    <string name="descHint">Description *</string>
+    <string name="basePriceHint">Base Price (Rs) *</string>
+    <string name="qtyHint">Quantity (KG) *</string>
+    <string name="aucEndDateHint">Auction End Date *</string>
+    <string name="aucImgTitle">Item Image *</string>
+    <string name="aucCameraHint">Camera</string>
+    <string name="aucGalleryHint">Gallery</string>
+    <string name="publishAucBtn">Publish Auction</string>
 </resources>

@@ -12,9 +12,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
+import com.example.farmbiddingsystem.fragments.BidsFragment;
+import com.example.farmbiddingsystem.fragments.HomeFragment;
+import com.example.farmbiddingsystem.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView; // Make sure to add this import
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

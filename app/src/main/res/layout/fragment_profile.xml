@@ -243,17 +243,6 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="16dp">
 
-                <TextView
-                    android:id="@+id/btnEditProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:drawablePadding="@dimen/default_margin"
-                    android:paddingVertical="@dimen/default_margin"
-                    android:text="Edit Profile"
-                    android:textColor="#333333"
-                    android:textSize="16sp"
-                    app:drawableStartCompat="@android:drawable/ic_menu_edit" />
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0"/>
 

@@ -35,6 +35,7 @@
             android:padding="12dp">
 
             <TextView
+                android:id="@+id/auctionTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Premium Wheat"
@@ -45,6 +46,7 @@
                 android:ellipsize="end" />
 
             <TextView
+                android:id="@+id/auctionQty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -58,6 +60,7 @@
                 />
 
             <TextView
+                android:id="@+id/auctionBidsPlaced"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -71,6 +74,7 @@
                 />
 
             <TextView
+                android:id="@+id/auctionTimeLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -85,6 +89,7 @@
                 />
 
             <TextView
+                android:id="@+id/auctionPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
