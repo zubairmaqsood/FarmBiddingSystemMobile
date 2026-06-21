@@ -12,6 +12,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.farmbiddingsystem.network.ApiClient;
+import com.example.farmbiddingsystem.network.ApiService;
+import com.example.farmbiddingsystem.utils.SharedPrefManager;
+import com.example.farmbiddingsystem.wrapperClasses.SignupResponse;
+
 public class SignupActivity extends AppCompatActivity {
 
     // Declare all UI elements
@@ -88,8 +93,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validateSignupForm()) {
-                    Toast.makeText(SignupActivity.this, "Validation Successful!", Toast.LENGTH_SHORT).show();
-                    clearForm();
+                    performNetworkSignup(); // Call the API!
                 }
             }
         });
@@ -102,6 +106,81 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    private void performNetworkSignup() {
+        // 1. Show Loading State
+        btnSignup.setText("Creating Account...");
+        btnSignup.setEnabled(false);
+
+        // 2. Gather Data
+        String fullName = etFullName.getText().toString().trim();
+        String cnic = etCnic.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+
+        // **CRITICAL:** PHP expects 'buyer' or 'farmer' in lowercase!
+        String userType = spinnerUserType.getText().toString().trim().toLowerCase();
+
+        // Initialize optional fields as empty strings
+        String buyerType = "", compName = "", compAddress = "", compType = "";
+        String farmLoc = "", farmSize = "", city = "";
+
+        if (userType.equals("buyer")) {
+            buyerType = spinnerBuyerType.getText().toString().trim();
+            compName = etCompanyName.getText().toString().trim();
+            compAddress = etCompanyAddress.getText().toString().trim();
+            compType = spinnerCompanyType.getText().toString().trim();
+        } else if (userType.equals("farmer")) {
+            farmLoc = etFarmLocation.getText().toString().trim();
+            farmSize = etFarmSize.getText().toString().trim();
+            city = etCity.getText().toString().trim();
+        }
+
+        // 3. Make API Call
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        apiService.registerUser(
+                userType, fullName, cnic, email, phone, password,
+                buyerType, compName, compAddress, compType,
+                farmLoc, farmSize, city
+        ).enqueue(new retrofit2.Callback<SignupResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<SignupResponse> call, retrofit2.Response<SignupResponse> response) {
+                btnSignup.setText("Sign Up");
+                btnSignup.setEnabled(true);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    SignupResponse res = response.body();
+
+                    if (res.isSuccess()) {
+                        // 4. Save to SharedPreferences!
+                        SharedPrefManager prefManager = new SharedPrefManager(SignupActivity.this);
+                        prefManager.saveUser(res.getToken(), res.getRole());
+
+                        Toast.makeText(SignupActivity.this, "Account Created!", Toast.LENGTH_SHORT).show();
+
+                        // 5. Send user to MainActivity
+                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                        // Clear the backstack so they can't hit 'back' to return to signup
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        // PHP returned an error gracefully
+                        Toast.makeText(SignupActivity.this, "Error: " + res.getError(), Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(SignupActivity.this, "Server Error. Check Email/CNIC.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<SignupResponse> call, Throwable t) {
+                btnSignup.setText("Sign Up");
+                btnSignup.setEnabled(true);
+                Toast.makeText(SignupActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
     private void setupSpinners() {
         String[] userTypes = {"Select User Type", "Buyer", "Farmer"};

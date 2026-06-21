@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.farmbiddingsystem.network.ApiClient;
 import com.example.farmbiddingsystem.network.ApiService;
+import com.example.farmbiddingsystem.utils.SharedPrefManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -38,13 +39,13 @@ public class LoginActivity extends AppCompatActivity {
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        email = etEmail.getText().toString().trim();
-        password = etPassword.getText().toString().trim();
         MaterialButton btnLogin = findViewById(R.id.btnLogin);
         TextView txtSignUp = findViewById(R.id.txtSignUp);
 
 
         btnLogin.setOnClickListener(v -> {
+            email = etEmail.getText().toString().trim();
+            password = etPassword.getText().toString().trim();
             if (validateLoginForm(email,password)) {
                 login(email,password);
                 Toast.makeText(LoginActivity.this, "Validation Passed! Logging in...", Toast.LENGTH_SHORT).show();
@@ -111,18 +112,19 @@ public class LoginActivity extends AppCompatActivity {
                     if (responseData.containsKey("success") && (boolean) responseData.get("success")) {
                         String token = (String) responseData.get("token");
                         String role = (String) responseData.get("role");
-                        String userName = (String) responseData.get("user_name");
+                        // String userName = (String) responseData.get("user_name"); // Add to Manager later if needed
 
-                        // Save credentials to SharedPreferences
-                        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                        prefs.edit()
-                                .putString("jwt_token", token)
-                                .putString("user_role", role)
-                                .putString("user_name", userName)
-                                .apply();
+                        // USE THE NEW MANAGER SO THE WHOLE APP KNOWS THEY ARE LOGGED IN!
+                        SharedPrefManager prefManager = new SharedPrefManager(LoginActivity.this);
+                        prefManager.saveUser(token, role);
+
+                        Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        // Clear the backstack so they can't hit "back" to return to login
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
+                        finish();
                     } else {
                         // This handles if php sent an error back under a successful HTTP 200 state
                         String error = (String) responseData.get("error");

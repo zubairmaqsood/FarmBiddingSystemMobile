@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem; // Make sure to add this import
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull; // Make sure to add this import
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.farmbiddingsystem.fragments.BidsFragment;
 import com.example.farmbiddingsystem.fragments.HomeFragment;
 import com.example.farmbiddingsystem.fragments.ProfileFragment;
+import com.example.farmbiddingsystem.utils.SharedPrefManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView; // Make sure to add this import
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -48,11 +50,20 @@ public class MainActivity extends AppCompatActivity {
         // 2. Find the Bottom Bar in your layout
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
         FloatingActionButton createAucBtn = findViewById(R.id.fabAddAuction);
+        SharedPrefManager prefManager = new SharedPrefManager(this);
 
         createAucBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, CreateAuctionForm.class));
+                if (!prefManager.isLoggedIn() || prefManager.getToken() == null) {
+                    Toast.makeText(MainActivity.this, "Please login to create an auction.", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                } else if (!"farmer".equalsIgnoreCase(prefManager.getRole())) {
+                    Toast.makeText(MainActivity.this, "Only registered Farmers can create auctions.", Toast.LENGTH_LONG).show();
+                } else {
+                    // They are logged in AND they are a farmer!
+                    startActivity(new Intent(MainActivity.this, CreateAuctionForm.class));
+                }
             }
         });
 

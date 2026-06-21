@@ -1,8 +1,6 @@
 package com.example.farmbiddingsystem.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +23,7 @@ import com.example.farmbiddingsystem.models.AuctionModel;
 import com.example.farmbiddingsystem.wrapperClasses.BidsResponse;
 import com.example.farmbiddingsystem.network.ApiClient;
 import com.example.farmbiddingsystem.network.ApiService;
+import com.example.farmbiddingsystem.utils.SharedPrefManager; // <-- Import the Manager!
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,6 @@ public class BidsFragment extends Fragment {
             startActivity(new Intent(requireActivity(), LoginActivity.class));
         });
 
-        // Changed to LinearLayoutManager because these status cards look better as a single column list
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         fetchMyBids();
@@ -61,14 +59,19 @@ public class BidsFragment extends Fragment {
     }
 
     private void fetchMyBids() {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        String token = prefs.getString("jwt_token", "");
-        String role = prefs.getString("user_role", "buyer"); // Get the role saved during login!
+        // 1. Initialize the Manager
+        SharedPrefManager prefManager = new SharedPrefManager(requireActivity());
 
-        if (token.isEmpty()) {
-            showErrorState("Please login to view your dashboard.");
+        // 2. Check if logged in the clean way
+        if (!prefManager.isLoggedIn() || prefManager.getToken() == null) {
+            // Pass TRUE to show the login button
+            showErrorState("Please login to view your dashboard.", true);
             return;
         }
+
+        // 3. Grab the Token and Role easily without worrying about keys!
+        String token = prefManager.getToken();
+        String role = prefManager.getRole() != null ? prefManager.getRole() : "buyer"; // Fallback just in case
 
         // Setup the Click Listener
         MyBidsAdapter.OnStatusClickListener clickListener = (auction, userRole) -> {
@@ -92,7 +95,7 @@ public class BidsFragment extends Fragment {
         myBidsAdapter = new MyBidsAdapter(new ArrayList<>(), role, clickListener);
         recyclerView.setAdapter(myBidsAdapter);
 
-        // Fetch Data from Vercel
+        // Fetch Data from Vercel using the secure token
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         apiService.getMyBids("Bearer " + token).enqueue(new Callback<BidsResponse>() {
             @Override
@@ -103,32 +106,38 @@ public class BidsFragment extends Fragment {
                     if (serverResponse.isSuccess()) {
                         List<AuctionModel> myBids = serverResponse.getData();
                         if (myBids == null || myBids.isEmpty()) {
-                            showErrorState("You have no active listings or bids yet.");
+                            showErrorState("You have no active listings or bids yet.",false);
                         } else {
                             showDataState();
                             myBidsAdapter.updateList(myBids);
                         }
                     } else {
-                        showErrorState(serverResponse.getError());
+                        showErrorState(serverResponse.getError(),false);
                     }
                 } else {
-                    showErrorState("Failed to load data. Please try again.");
+                    showErrorState("Failed to load data. Please try again.",false);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<BidsResponse> call, @NonNull Throwable t) {
                 Log.e("BIDS_API", "Network Error: " + t.getMessage());
-                showErrorState("Server unreachable. Check your internet connection.");
+                showErrorState("Server unreachable. Check your internet connection.",false);
             }
         });
     }
 
-    private void showErrorState(String message) {
+    private void showErrorState(String message, boolean showLoginButton) {
         recyclerView.setVisibility(View.GONE);
         tvStatusMessage.setVisibility(View.VISIBLE);
-        myBidLogin.setVisibility(View.VISIBLE);
         tvStatusMessage.setText(message);
+
+        // Only show the button if we explicitly tell it to!
+        if (showLoginButton) {
+            myBidLogin.setVisibility(View.VISIBLE);
+        } else {
+            myBidLogin.setVisibility(View.GONE);
+        }
     }
 
     private void showDataState() {

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -21,20 +22,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.farmbiddingsystem.network.ApiClient;
+import com.example.farmbiddingsystem.network.ApiService;
+import com.example.farmbiddingsystem.utils.SharedPrefManager;
+import com.example.farmbiddingsystem.wrapperClasses.GenericResponse;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CreateAuctionForm extends AppCompatActivity {
 
     private ImageView backBtn, imagePreview;
-    private AutoCompleteTextView spinnerCategory;
     private TextInputEditText aucTitle, aucDesc, basePrice, aucQty, endTime;
 
     private MaterialButton btnCamera, btnGallery, btnCreateAuction, btnAiDescribe, btnAiSuggestPrice;
@@ -69,7 +82,6 @@ public class CreateAuctionForm extends AppCompatActivity {
         setContentView(R.layout.activity_create_auction_form);
 
         backBtn = findViewById(R.id.backBtn);
-        spinnerCategory = findViewById(R.id.spinnerCategory);
         aucTitle = findViewById(R.id.aucTitle);
         aucDesc = findViewById(R.id.aucDesc);
         basePrice = findViewById(R.id.basePrice);
@@ -88,9 +100,6 @@ public class CreateAuctionForm extends AppCompatActivity {
         backBtn.setOnClickListener(v -> finish());
         endTime.setOnClickListener(v -> showDatePicker());
 
-        String[] cropCategories = new String[]{"Wheat", "Rice (Basmati)", "Sugarcane", "Maize", "Vegetables (Mixed)", "Fruits", "Pulses"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, cropCategories);
-        spinnerCategory.setAdapter(adapter);
 
         btnGallery.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -121,19 +130,14 @@ public class CreateAuctionForm extends AppCompatActivity {
             return;
         }
 
-        String category = spinnerCategory.getText().toString().trim();
         String title = aucTitle.getText().toString().trim();
 
-        if (category.isEmpty() || category.equals("Crop Category *") || title.isEmpty()) {
-            Toast.makeText(this, "Please select Category and Item Name so AI knows context!", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         btnAiDescribe.setEnabled(false);
         btnAiDescribe.setText("✨ Analyzing Image...");
         Toast.makeText(this, "Analyzing image quality...", Toast.LENGTH_SHORT).show();
 
-        qwenAiHelper.analyzeCropImage(selectedImageBitmap, category, title, new QwenAiHelper.AiCallback() {
+        qwenAiHelper.analyzeCropImage(selectedImageBitmap, title, new QwenAiHelper.AiCallback() {
             @Override
             public void onSuccess(String description, String qualityGrade, double ignoredPrice) {
                 btnAiDescribe.setEnabled(true);
@@ -154,7 +158,6 @@ public class CreateAuctionForm extends AppCompatActivity {
     }
 
     private void suggestAiPrice() {
-        String category = spinnerCategory.getText().toString().trim();
         String title = aucTitle.getText().toString().trim();
         String qtyKgStr = aucQty.getText().toString().trim(); // We now expect this to be in KG
         String descriptionText = aucDesc.getText().toString().trim();
@@ -185,7 +188,7 @@ public class CreateAuctionForm extends AppCompatActivity {
         Toast.makeText(this, "Converting KG to Muns and estimating price...", Toast.LENGTH_SHORT).show();
 
         // Pass the converted Muns to the AI
-        qwenAiHelper.suggestPriceText(category, title, finalMunsStr, descriptionText, new QwenAiHelper.AiCallback() {
+        qwenAiHelper.suggestPriceText(title, finalMunsStr, descriptionText, new QwenAiHelper.AiCallback() {
             @Override
             public void onSuccess(String ignoredDesc, String ignoredQuality, double suggestedPrice) {
                 runOnUiThread(() -> {
@@ -247,15 +250,126 @@ public class CreateAuctionForm extends AppCompatActivity {
 
     private void showDatePicker() {
         final Calendar calendar = Calendar.getInstance();
+
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, year, month, day) -> endTime.setText(day + "/" + (month + 1) + "/" + year),
+                (view, year, month, day) -> {
+                    // Format explicitly as YYYY-MM-DD so PHP's strtotime() reads it perfectly
+                    String formattedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, day);
+                    endTime.setText(formattedDate);
+                },
                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
+        // Force the minimum selectable date to be 15 days from today!
+        calendar.add(Calendar.DAY_OF_MONTH, 15);
+        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+
         datePickerDialog.show();
     }
 
     private void validateAndSubmit() {
-        Toast.makeText(this, "Auction Created Successfully!", Toast.LENGTH_SHORT).show();
-        finish();
+        String title = aucTitle.getText().toString().trim();
+        String price = basePrice.getText().toString().trim();
+        String qty = aucQty.getText().toString().trim();
+        String desc = aucDesc.getText().toString().trim();
+        String end = endTime.getText().toString().trim();
+
+        if (title.isEmpty() || price.isEmpty() || qty.isEmpty() || desc.isEmpty() || end.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (selectedImageUri == null) {
+            Toast.makeText(this, "Please select an image for your crop", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        btnCreateAuction.setEnabled(false);
+        btnCreateAuction.setText("Publishing Auction...");
+
+        // A. Convert Image directly to Base64 String
+        String base64ImageString = getBase64FromUri(selectedImageUri);
+        if (base64ImageString == null) {
+            Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show();
+            btnCreateAuction.setEnabled(true);
+            return;
+        }
+
+        // B. Get the Token
+        SharedPrefManager prefManager = new SharedPrefManager(this);
+        String token = "Bearer " + prefManager.getToken();
+
+        // C. Send pure text to Vercel (No Multipart bodies needed!)
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        apiService.createAuction(token, title, price, qty, desc, end, base64ImageString)
+                .enqueue(new Callback<GenericResponse>() {
+                    @Override
+                    public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            GenericResponse res = response.body();
+                            if (res.isSuccess()) {
+                                Toast.makeText(CreateAuctionForm.this, "Auction Created Successfully!", Toast.LENGTH_LONG).show();
+                                finish();
+                            } else {
+                                Toast.makeText(CreateAuctionForm.this, "Error: " + res.getError(), Toast.LENGTH_LONG).show();
+                                btnCreateAuction.setEnabled(true);
+                                btnCreateAuction.setText("Publish Auction");
+                            }
+                        } else {
+                            try {
+                                String errorString = response.errorBody().string();
+                                Log.e("RAW_SERVER_RESPONSE", "Error Code " + response.code() + " | Body: " + errorString);
+                                Toast.makeText(CreateAuctionForm.this, "Server rejected data. See Logcat.", Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                Toast.makeText(CreateAuctionForm.this, "Unknown Server Error", Toast.LENGTH_LONG).show();
+                            }
+                            btnCreateAuction.setEnabled(true);
+                            btnCreateAuction.setText("Publish Auction");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GenericResponse> call, Throwable t) {
+                        Toast.makeText(CreateAuctionForm.this, "Network Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                        btnCreateAuction.setEnabled(true);
+                        btnCreateAuction.setText("Publish Auction");
+                    }
+                });
+    }
+
+    // --- NEW HELPER: COMPRESS AND CONVERT TO BASE64 STRING ---
+    // --- UPGRADED HELPER: SCALE, COMPRESS, AND CONVERT ---
+    private String getBase64FromUri(Uri uri) {
+        try {
+            Bitmap bitmap;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), uri));
+            } else {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+            }
+
+            // 1. SHRINK THE DIMENSIONS (The Magic Fix!)
+            int maxWidth = 800;
+            int maxHeight = 800;
+            float scale = Math.min(((float) maxWidth / bitmap.getWidth()), ((float) maxHeight / bitmap.getHeight()));
+
+            // Only scale it down if the image is actually larger than 800px
+            if (scale < 1.0f) {
+                android.graphics.Matrix matrix = new android.graphics.Matrix();
+                matrix.postScale(scale, scale);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            }
+
+            // 2. COMPRESS THE QUALITY
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, baos); // 60% quality is perfect for 800px
+            byte[] imageBytes = baos.toByteArray();
+
+            // 3. CONVERT TO TEXT
+            return android.util.Base64.encodeToString(imageBytes, android.util.Base64.DEFAULT);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

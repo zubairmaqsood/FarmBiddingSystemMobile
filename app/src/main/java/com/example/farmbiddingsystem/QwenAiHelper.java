@@ -47,7 +47,7 @@ public class QwenAiHelper {
     }
 
     // 1. METHOD FOR IMAGE + TEXT (Quality & Description)
-    public void analyzeCropImage(Bitmap cropBitmap, String category, String itemName, AiCallback callback) {
+    public void analyzeCropImage(Bitmap cropBitmap, String itemName, AiCallback callback) {
         new Thread(() -> {
             try {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -56,7 +56,6 @@ public class QwenAiHelper {
                 String base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT).replaceAll("\\s+", "");
 
                 String textPrompt = "You are an expert agricultural appraiser analyzing a listing for an auction app.\n" +
-                        "Crop Category: " + category + "\n" +
                         "Item Name: " + itemName + "\n\n" +
                         "Analyze the attached image and determine:\n" +
                         "1. A 2-3 sentence highly professional and appealing description for buyers.\n" +
@@ -105,11 +104,10 @@ public class QwenAiHelper {
     }
 
     // 2. METHOD FOR TEXT ONLY (Price Prediction based on Muns)
-    public void suggestPriceText(String category, String itemName, String quantity, String detailsText, AiCallback callback) {
+    public void suggestPriceText( String itemName, String quantity, String detailsText, AiCallback callback) {
         new Thread(() -> {
             try {
                 String textPrompt = "You are an expert agricultural analyst in Pakistan evaluating a listing for an auction app.\n" +
-                        "Crop Category: " + category + "\n" +
                         "Item Name: " + itemName + "\n" +
                         "Quantity: " + quantity + " Muns (1 Mun = 40 KG)\n" +
                         "Quality/Details: " + detailsText + "\n\n" +

@@ -72,32 +72,13 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/cropCatHint"
-                        android:layout_marginBottom="12dp"
-                        app:boxStrokeColor="#2E7D32"
-                        app:hintTextColor="#2E7D32">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/spinnerCategory"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:focusable="false" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Item Name *"
                         android:layout_marginBottom="16dp"
                         android:hint="@string/itemNameHint"
-                        android:layout_marginBottom="12dp"
                         app:boxStrokeColor="#2E7D32"
                         app:hintTextColor="#2E7D32">
 
