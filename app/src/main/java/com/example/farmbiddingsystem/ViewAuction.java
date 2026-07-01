@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.farmbiddingsystem.models.AuctionDetailsResponse;
 import com.example.farmbiddingsystem.network.ApiClient;
 import com.example.farmbiddingsystem.network.ApiService;
+import com.example.farmbiddingsystem.utils.SharedPrefManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,7 +61,7 @@ public class ViewAuction extends AppCompatActivity {
 
         detailTitle.setText(initialTitle);
         if (initialImage != null && !initialImage.isEmpty()) {
-            Glide.with(this).load(initialImage).placeholder(R.drawable.onion).into(detailImg);
+            Glide.with(this).load(initialImage).into(detailImg);
         }
 
         // Start timer using intent data while API loads
@@ -142,6 +143,11 @@ public class ViewAuction extends AppCompatActivity {
                     }
                     // Update timer target just in case it was extended/changed
                     endTimeString = details.getEndTime();
+                    if (details.getImagePath() != null && !details.getImagePath().isEmpty()) {
+                        Glide.with(ViewAuction.this)
+                                .load(details.getImagePath())
+                                .into(detailImg);
+                    }
                 }
             }
 
@@ -154,6 +160,17 @@ public class ViewAuction extends AppCompatActivity {
     }
 
     private void openBidForm() {
+        // Inside your click listener...
+        SharedPrefManager prefManager = new SharedPrefManager(this);
+        String token = prefManager.getToken();
+        String role = prefManager.getRole();
+
+        // Optional extra UI check (even though PHP will block it, this prevents the form from opening)
+        if ("farmer".equalsIgnoreCase(role)) {
+            Toast.makeText(this, "Farmers cannot place bids.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         BidForm bidSheet = new BidForm();
         Bundle bundle = new Bundle();
         bundle.putString("Auction Title", "Crop Name: " + detailTitle.getText().toString());
@@ -161,6 +178,7 @@ public class ViewAuction extends AppCompatActivity {
 
         // Pass the actual ID to the BidForm so the PHP script knows WHICH auction to update!
         bundle.putInt("Auction ID", auctionId);
+        bundle.putString("Token", token);
 
         bidSheet.setArguments(bundle);
         bidSheet.show(getSupportFragmentManager(), "BidForm");

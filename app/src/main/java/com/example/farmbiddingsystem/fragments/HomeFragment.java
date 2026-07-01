@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.example.farmbiddingsystem.models.AuctionModel;
 import com.example.farmbiddingsystem.network.ApiClient;
 import com.example.farmbiddingsystem.network.ApiService;
 import com.example.farmbiddingsystem.utils.AuctionDataHolder;
+import com.example.farmbiddingsystem.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,10 +96,21 @@ public class HomeFragment extends Fragment {
         AuctionAdapter.OnAuctionClickListener commonClickListener = new AuctionAdapter.OnAuctionClickListener() {
             @Override
             public void onBidClick(AuctionModel auction) {
+                SharedPrefManager prefManager = new SharedPrefManager(requireActivity());
+                String token = prefManager.getToken();
+                String role = prefManager.getRole();
+
+                // Optional extra UI check (even though PHP will block it, this prevents the form from opening)
+                if ("farmer".equalsIgnoreCase(role)) {
+                    Toast.makeText(getContext(), "Farmers cannot place bids.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 BidForm bidSheet = new BidForm();
                 Bundle bundle = new Bundle();
                 bundle.putString("Auction Title", "Crop Name: " + auction.getAucTitle());
                 bundle.putString("Auction Price", "Current Highest Bid: Rs " + auction.getCurrentPrice());
+                bundle.putString("Token", token);
                 bidSheet.setArguments(bundle);
                 bidSheet.show(requireActivity().getSupportFragmentManager(), "BidForm");
             }

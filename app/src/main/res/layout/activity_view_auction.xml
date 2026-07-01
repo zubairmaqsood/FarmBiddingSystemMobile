@@ -44,8 +44,7 @@
             android:id="@+id/detailImg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/product_image_height"
-            android:scaleType="centerCrop"
-            android:src="@drawable/onion" />
+            android:scaleType="centerCrop"/>
 
         <!-- Status -->
         <TextView

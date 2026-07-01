@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -82,12 +84,18 @@ public class BidsFragment extends Fragment {
         // Setup the Click Listener
         MyBidsAdapter.OnStatusClickListener clickListener = (auction) -> {
                 // Buyer clicked "Update Bid"
+
+            if ("farmer".equalsIgnoreCase(role)) {
+                Toast.makeText(getContext(), "Farmers cannot place bids.", Toast.LENGTH_SHORT).show();
+                return;
+            }
                 BidForm bidSheet = new BidForm();
                 Bundle bundle = new Bundle();
                 bundle.putString("Auction Title", "Crop Name: " + auction.getAucTitle());
                 bundle.putString("Auction Price", "Current Highest Bid: Rs " + auction.getHighestBid());
                 // CRITICAL: Pass the ID here so the BidForm knows which auction to update!
                 bundle.putInt("Auction ID", auction.getAucId());
+                bundle.putString("Token", token);
                 bidSheet.setArguments(bundle);
                 bidSheet.show(requireActivity().getSupportFragmentManager(), "BidForm");
         };

@@ -73,4 +73,13 @@ public interface ApiService {
     Call<AuctionDetailsResponse> getAuctionDetails(
             @Query("id") int auctionId
     );
+
+    @FormUrlEncoded
+    @POST("auction_actions.php") // Ensure this matches your filename
+    Call<GenericResponse> placeBid(
+            @Header("Authorization") String token,
+            @Field("action") String action,
+            @Field("auc_id") int auctionId,
+            @Field("bid_amount") String bidAmount
+    );
 }

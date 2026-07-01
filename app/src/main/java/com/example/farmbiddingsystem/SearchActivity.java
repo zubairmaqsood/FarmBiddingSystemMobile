@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.farmbiddingsystem.adapters.SearchAdapter;
 import com.example.farmbiddingsystem.models.AuctionModel;
 import com.example.farmbiddingsystem.utils.AuctionDataHolder; // Import the bridge
+import com.example.farmbiddingsystem.utils.SharedPrefManager;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -51,10 +53,21 @@ public class SearchActivity extends AppCompatActivity {
         SearchAdapter.OnAuctionClickListener clickListener = new SearchAdapter.OnAuctionClickListener() {
             @Override
             public void onBidClick(AuctionModel auction) {
+                SharedPrefManager prefManager = new SharedPrefManager(SearchActivity.this);
+                String token = prefManager.getToken();
+                String role = prefManager.getRole();
+
+                // Optional extra UI check (even though PHP will block it, this prevents the form from opening)
+                if ("farmer".equalsIgnoreCase(role)) {
+                    Toast.makeText(SearchActivity.this, "Farmers cannot place bids.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 BidForm bidSheet = new BidForm();
                 Bundle bundle = new Bundle();
                 bundle.putString("Auction Title", "Crop Name: " + auction.getAucTitle());
                 bundle.putString("Auction Price", "Current Highest Bid: Rs " + auction.getCurrentPrice());
+                bundle.putInt("Auction ID", auction.getAucId());
+                bundle.putString("Token", token);
                 bidSheet.setArguments(bundle);
                 bidSheet.show(getSupportFragmentManager(), "BidForm");
             }
