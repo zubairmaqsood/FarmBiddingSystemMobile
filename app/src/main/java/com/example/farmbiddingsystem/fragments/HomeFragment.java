@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -136,7 +134,18 @@ public class HomeFragment extends Fragment {
 
         // 6. FETCH REAL DATA FROM VERCEL
         updateAuctionsRealTime();
-        fetchLiveAuctions();
+        List<AuctionModel> cachedAuctions = AuctionDataHolder.getInstance().getMasterList();
+
+        if (cachedAuctions != null && !cachedAuctions.isEmpty()) {
+            // Data is already in memory! Skip the API call.
+            allAuctions = cachedAuctions;
+            showDataState();
+            updateAuctionsRealTime();
+            tickerHandler.post(tickerRunnable); // Start the timer
+        } else {
+            // No data in memory, fetch from the server (runs only on first load)
+            fetchLiveAuctions();
+        }
 
         return rootView;
     }

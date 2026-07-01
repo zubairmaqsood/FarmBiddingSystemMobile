@@ -21,6 +21,7 @@ import com.example.farmbiddingsystem.R;
 import com.example.farmbiddingsystem.ViewAuction;
 import com.example.farmbiddingsystem.adapters.MyBidsAdapter;
 import com.example.farmbiddingsystem.models.AuctionModel;
+import com.example.farmbiddingsystem.utils.AuctionDataHolder;
 import com.example.farmbiddingsystem.wrapperClasses.BidsResponse;
 import com.example.farmbiddingsystem.network.ApiClient;
 import com.example.farmbiddingsystem.network.ApiService;
@@ -95,6 +96,14 @@ public class BidsFragment extends Fragment {
         myBidsAdapter = new MyBidsAdapter(new ArrayList<>(), role, clickListener);
         recyclerView.setAdapter(myBidsAdapter);
 
+        List<AuctionModel> cachedBids = AuctionDataHolder.getInstance().getMyBidsList();
+        if (cachedBids != null && !cachedBids.isEmpty()) {
+            // Load instantly from memory without showing loading spinner
+            showDataState();
+            myBidsAdapter.updateList(cachedBids);
+            return; // STOP EXECUTION HERE, DO NOT CALL API
+        }
+
         showLoadingState();
 
         // Fetch Data from Vercel using the secure token
@@ -112,6 +121,8 @@ public class BidsFragment extends Fragment {
                         } else {
                             showDataState();
                             myBidsAdapter.updateList(myBids);
+                            // SAVE TO CACHE FOR NEXT TIME
+                            AuctionDataHolder.getInstance().setMyBidsList(myBids);
                         }
                     } else {
                         showErrorState(serverResponse.getError(),false);

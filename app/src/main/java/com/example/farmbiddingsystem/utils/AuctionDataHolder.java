@@ -6,24 +6,41 @@ import java.util.List;
 
 public class AuctionDataHolder {
     private static AuctionDataHolder instance;
-    private List<AuctionModel> masterList;
 
-    private AuctionDataHolder() {
-        masterList = new ArrayList<>();
-    }
+    // Store data for both screens
+    private List<AuctionModel> masterList = new ArrayList<>();
+    private List<AuctionModel> myBidsList = new ArrayList<>();
 
-    public static AuctionDataHolder getInstance() {
+    private AuctionDataHolder() {}
+
+    public static synchronized AuctionDataHolder getInstance() {
         if (instance == null) {
             instance = new AuctionDataHolder();
         }
         return instance;
     }
 
-    public void setMasterList(List<AuctionModel> list) {
-        this.masterList = list;
-    }
-
+    // --- Home Screen Data ---
     public List<AuctionModel> getMasterList() {
         return masterList;
+    }
+
+    public void setMasterList(List<AuctionModel> masterList) {
+        this.masterList = masterList;
+    }
+
+    // --- My Bids Data ---
+    public List<AuctionModel> getMyBidsList() {
+        return myBidsList;
+    }
+
+    public void setMyBidsList(List<AuctionModel> myBidsList) {
+        this.myBidsList = myBidsList;
+    }
+
+    // Call this when the user logs out!
+    public void clearAllData() {
+        masterList.clear();
+        myBidsList.clear();
     }
 }
