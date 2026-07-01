@@ -23,7 +23,7 @@ public class MyBidsAdapter extends RecyclerView.Adapter<MyBidsAdapter.ViewHolder
 
     // Interface to send clicks back to the Fragment
     public interface OnStatusClickListener {
-        void onActionClick(AuctionModel auction, String role);
+        void onActionClick(AuctionModel auction);
     }
 
     public MyBidsAdapter(List<AuctionModel> auctionList, String userRole, OnStatusClickListener listener) {
@@ -69,25 +69,35 @@ public class MyBidsAdapter extends RecyclerView.Adapter<MyBidsAdapter.ViewHolder
 
         // ── ROLE-BASED UI LOGIC ──
         if ("buyer".equalsIgnoreCase(userRole)) {
-            // What the Buyer sees
+            // What the Buyer sees: Keep the button visible
+            holder.btnAction.setVisibility(View.VISIBLE);
             holder.tvDynamicInfo.setText("My Bid: Rs " + auction.getMyBid());
             holder.btnAction.setText("Update Bid");
+
+            // Click listener for Buyer action
+            holder.btnAction.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onActionClick(auction);
+                }
+            });
         } else {
-            // What the Farmer sees
+            // What the Farmer sees: Completely remove the action button from the layout flow
+            holder.btnAction.setVisibility(View.GONE);
             holder.tvDynamicInfo.setText("Total Bids Placed: " + auction.getBidCount());
-            holder.btnAction.setText("View Bids"); // renamed — avoids duplicating "View Details" text
         }
 
-        // ── Primary Action Button (role-specific) ──
-        holder.btnAction.setOnClickListener(v -> {
-            listener.onActionClick(auction, userRole);
-        });
-
-        // ✅ FIX: btnViewDetails was in the XML but had no listener.
-        // Always opens the full auction detail screen, regardless of role.
+        // ── View Details Button (Available to both roles) ──
         holder.btnViewDetails.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), ViewAuction.class);
-            intent.putExtra("auction_id", auction.getAucId());
+
+            // FIX: Changed "auction_id" to "auc_id" to match exactly what ViewAuction.java reads!
+            intent.putExtra("auc_id", auction.getAucId());
+
+            // Optional: Pass these to let ViewAuction load image & title instantly without layout shifts
+            intent.putExtra("title", auction.getAucTitle());
+            intent.putExtra("image_url", auction.getImagePath());
+            intent.putExtra("end_time", auction.getEndTime());
+
             v.getContext().startActivity(intent);
         });
     }

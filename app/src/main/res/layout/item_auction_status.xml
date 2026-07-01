@@ -26,7 +26,6 @@
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Live"
             android:textSize="12sp"
             android:textStyle="bold"
             android:background="#F5F5F5"
@@ -55,7 +54,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="2dp"
-            android:text="Qty: 500 kg"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@id/tvTitle"
             app:layout_constraintStart_toEndOf="@id/imgCrop" />

@@ -62,6 +62,12 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onViewDetailsClick(AuctionModel auction) {
                 Intent intent = new Intent(SearchActivity.this, ViewAuction.class);
+                // PASS THE ID SO THE API CAN FETCH THE FULL DETAILS
+                intent.putExtra("auc_id", auction.getAucId());
+                // Pass enough info to show the image/title instantly
+                intent.putExtra("title", auction.getAucTitle());
+                intent.putExtra("image_url", auction.getImagePath());
+                intent.putExtra("end_time", auction.getEndTime());
                 startActivity(intent);
             }
         };

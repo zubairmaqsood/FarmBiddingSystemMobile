@@ -52,18 +52,16 @@
             android:id="@+id/detailStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ACTIVE"
-            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/margin_medium"
             android:background="@color/yellow"
             android:padding="@dimen/padding_view_small"
-            android:layout_marginTop="@dimen/margin_medium"/>
+            android:textColor="@color/black" />
 
         <!-- Title -->
         <TextView
             android:id="@+id/detailTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fresh Onion"
             android:textSize="@dimen/heading_text_size"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -74,7 +72,6 @@
             android:id="@+id/detailFarmer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sold by: Ali"
             android:textSize="@dimen/normal_text_size"
             android:textColor="@color/gray"
             android:layout_marginTop="@dimen/margin_small"/>
@@ -84,7 +81,6 @@
             android:id="@+id/detailLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location: Lahore"
             android:textSize="@dimen/normal_text_size"
             android:textColor="@color/gray"
             android:layout_marginTop="@dimen/margin_xsmall"/>
@@ -94,7 +90,6 @@
             android:id="@+id/detailPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Phone: 03001234567"
             android:textSize="@dimen/normal_text_size"
             android:textColor="@color/gray"
             android:layout_marginTop="@dimen/margin_xsmall"/>
@@ -104,7 +99,6 @@
             android:id="@+id/detailQty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Quantity: 100 KG"
             android:textColor="@color/white"
             android:background="@color/gray"
             android:padding="@dimen/padding_view_small"
@@ -115,7 +109,6 @@
             android:id="@+id/detailBidderName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Highest Bidder: Ahmed"
             android:textSize="@dimen/subheading_text_size"
             android:textStyle="bold"
             android:textColor="@color/blue"
@@ -146,7 +139,6 @@
                     android:id="@+id/detailHighestBid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rs 5000"
                     android:textSize="@dimen/price_text_size"
                     android:textStyle="bold"
                     android:textColor="@color/green"/>
@@ -168,7 +160,6 @@
                     android:id="@+id/detailBasePrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rs 3000"
                     android:textSize="@dimen/subheading_text_size"
                     android:textStyle="bold"
                     android:textColor="@color/dark_gray"/>
@@ -188,7 +179,6 @@
             android:id="@+id/detailTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="02:12:45"
             android:textSize="@dimen/timer_text_size"
             android:textStyle="bold"
             android:textColor="@color/red"/>
@@ -206,7 +196,6 @@
             android:id="@+id/detailDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fresh farm onions available for bidding."
             android:textColor="@color/gray"
             android:lineSpacingExtra="@dimen/line_spacing"
             android:layout_marginTop="@dimen/margin_xsmall"/>
@@ -216,7 +205,6 @@
             android:id="@+id/detailBidCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Bids: 12"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/margin_medium"/>
 

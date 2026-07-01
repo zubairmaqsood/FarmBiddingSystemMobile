@@ -44,6 +44,8 @@ public class HomeFragment extends Fragment {
     // --- MASTER DATA & UI LISTS ---
     private List<AuctionModel> allAuctions = new ArrayList<>();
 
+    private View rootView; // Store the root view
+
     private AuctionAdapter regularAdapter;
     private AuctionAdapter endingAdapter;
 
@@ -55,6 +57,8 @@ public class HomeFragment extends Fragment {
     private RecyclerView rvEnding;
     private RecyclerView rvLive;
 
+    private boolean isInitialLoad = true;
+
     // --- CAROUSEL ---
     private ViewPager2 viewPager2;
     private final Handler sliderHandler = new Handler(Looper.getMainLooper());
@@ -62,10 +66,10 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         // 1. CAROUSEL SETUP
-        viewPager2 = view.findViewById(R.id.bannerCarousel);
+        viewPager2 = rootView.findViewById(R.id.bannerCarousel);
         List<Integer> images = Arrays.asList(
                 R.drawable.main_pic1, R.drawable.main_pic2,
                 R.drawable.main_pic3, R.drawable.main_pic4
@@ -81,11 +85,12 @@ public class HomeFragment extends Fragment {
         });
 
         // 2. UI INITIALIZATION
-        rvLive = view.findViewById(R.id.rvLiveAuctions);
-        rvEnding = view.findViewById(R.id.rvEndingAuctions);
-        layoutEndingSoonHeader = view.findViewById(R.id.layoutEndingSoonHeader);
-        tvLiveHeader = view.findViewById(R.id.tvLiveHeader); // Make sure this ID matches your XML
-        tvEmptyState = view.findViewById(R.id.tvEmptyState); // Make sure this ID matches your XML
+        viewPager2 = rootView.findViewById(R.id.bannerCarousel);
+        rvLive = rootView.findViewById(R.id.rvLiveAuctions);
+        rvEnding = rootView.findViewById(R.id.rvEndingAuctions);
+        layoutEndingSoonHeader = rootView.findViewById(R.id.layoutEndingSoonHeader);
+        tvLiveHeader = rootView.findViewById(R.id.tvLiveHeader);
+        tvEmptyState = rootView.findViewById(R.id.tvEmptyState);
 
         // 3. COMMON CLICK LISTENER
         AuctionAdapter.OnAuctionClickListener commonClickListener = new AuctionAdapter.OnAuctionClickListener() {
@@ -102,6 +107,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onViewDetailsClick(AuctionModel auction) {
                 Intent intent = new Intent(requireActivity(), ViewAuction.class);
+
+                // Pass basic data for INSTANT loading
+                intent.putExtra("auc_id", auction.getAucId());
+                intent.putExtra("title", auction.getAucTitle());
+                intent.putExtra("image_url", auction.getImagePath());
+                intent.putExtra("end_time", auction.getEndTime());
+
                 startActivity(intent);
             }
         };
@@ -116,7 +128,7 @@ public class HomeFragment extends Fragment {
         rvEnding.setAdapter(endingAdapter);
 
         // 5. SEARCH BAR SETUP
-        EditText editSearch = view.findViewById(R.id.editSearch);
+        EditText editSearch = rootView.findViewById(R.id.editSearch);
         editSearch.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), SearchActivity.class);
             startActivity(intent);
@@ -126,39 +138,31 @@ public class HomeFragment extends Fragment {
         updateAuctionsRealTime();
         fetchLiveAuctions();
 
-        return view;
+        return rootView;
     }
 
     private void fetchLiveAuctions() {
+        showLoadingState(); // <--- Call this FIRST
+
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         apiService.getHomePageAuctions().enqueue(new Callback<List<AuctionModel>>() {
             @Override
             public void onResponse(@NonNull Call<List<AuctionModel>> call, @NonNull Response<List<AuctionModel>> response) {
-
                 if (response.isSuccessful() && response.body() != null) {
-                    // Update master list with live data
                     allAuctions = response.body();
                     AuctionDataHolder.getInstance().setMasterList(allAuctions);
 
-                    // Start the ticker immediately after data arrives
+                    showDataState(); // <--- Call this to clear the loading spinner
                     updateAuctionsRealTime();
                     tickerHandler.postDelayed(tickerRunnable, 1000);
                 } else {
-                    try {
-                        // This grabs the exact error message sent by your PHP catch block!
-                        String errorMsg = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                        Log.e("HOME_API_ERROR", "Server rejected request: " + errorMsg);
-                        Toast.makeText(getContext(), "Server Error: See Logcat", Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    showErrorState("Server error. Please try again later.");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<AuctionModel>> call, @NonNull Throwable t) {
-                Log.e("HOME_API", "Network Error: " + t.getMessage());
-                Toast.makeText(getContext(), "Server unreachable. Check internet.", Toast.LENGTH_SHORT).show();
+                showErrorState("Check your internet connection.");
             }
         });
     }
@@ -252,6 +256,40 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    private void showLoadingState() {
+        if (rootView == null) return; // Safety check
+
+        rvLive.setVisibility(View.GONE);
+        rvEnding.setVisibility(View.GONE);
+        layoutEndingSoonHeader.setVisibility(View.GONE);
+        tvLiveHeader.setVisibility(View.GONE);
+        tvEmptyState.setVisibility(View.GONE);
+
+        View loadingSpinner = rootView.findViewById(R.id.loadingSpinner);
+        if (loadingSpinner != null) loadingSpinner.setVisibility(View.VISIBLE);
+    }
+
+    private void showDataState() {
+        if (rootView == null) return;
+
+        View loadingSpinner = rootView.findViewById(R.id.loadingSpinner);
+        if (loadingSpinner != null) loadingSpinner.setVisibility(View.GONE);
+    }
+
+    private void showErrorState(String message) {
+        if (rootView == null) return;
+
+        View loadingSpinner = rootView.findViewById(R.id.loadingSpinner);
+        if (loadingSpinner != null) loadingSpinner.setVisibility(View.GONE);
+
+        tvEmptyState.setVisibility(View.VISIBLE);
+        tvEmptyState.setText(message);
+
+        rvLive.setVisibility(View.GONE);
+        rvEnding.setVisibility(View.GONE);
+        layoutEndingSoonHeader.setVisibility(View.GONE);
+        tvLiveHeader.setVisibility(View.GONE);
+    }
     // --- CLEANUP LOGIC ---
     @Override
     public void onDestroyView() {

@@ -1,5 +1,6 @@
 package com.example.farmbiddingsystem.network;
 
+import com.example.farmbiddingsystem.models.AuctionDetailsResponse;
 import com.example.farmbiddingsystem.models.AuctionModel;
 import com.example.farmbiddingsystem.wrapperClasses.BidsResponse;
 import com.example.farmbiddingsystem.wrapperClasses.GenericResponse;
@@ -66,5 +67,10 @@ public interface ApiService {
             @Field("auc_desc") String desc,
             @Field("end_time") String endTime,
             @Field("item_image") String base64Image
+    );
+
+    @GET("viewBid.php")
+    Call<AuctionDetailsResponse> getAuctionDetails(
+            @Query("id") int auctionId
     );
 }

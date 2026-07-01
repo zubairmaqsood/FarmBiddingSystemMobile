@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +38,8 @@ public class BidsFragment extends Fragment {
     private TextView tvStatusMessage;
     private MyBidsAdapter myBidsAdapter;
     private Button myBidLogin;
+    private ProgressBar loadingSpinner;
+
 
     @Nullable
     @Override
@@ -46,6 +49,7 @@ public class BidsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.bidsRecyclerView);
         tvStatusMessage = view.findViewById(R.id.tvStatusMessage);
         myBidLogin = view.findViewById(R.id.my_bid_login_btn);
+        loadingSpinner = view.findViewById(R.id.loadingSpinner);
 
         myBidLogin.setOnClickListener(v -> {
             startActivity(new Intent(requireActivity(), LoginActivity.class));
@@ -74,26 +78,24 @@ public class BidsFragment extends Fragment {
         String role = prefManager.getRole() != null ? prefManager.getRole() : "buyer"; // Fallback just in case
 
         // Setup the Click Listener
-        MyBidsAdapter.OnStatusClickListener clickListener = (auction, userRole) -> {
-            if ("buyer".equalsIgnoreCase(userRole)) {
-                // Buyer clicked "Update Bid" -> Open the Bottom Sheet Form
+        // Setup the Click Listener
+        MyBidsAdapter.OnStatusClickListener clickListener = (auction) -> {
+                // Buyer clicked "Update Bid"
                 BidForm bidSheet = new BidForm();
                 Bundle bundle = new Bundle();
                 bundle.putString("Auction Title", "Crop Name: " + auction.getAucTitle());
                 bundle.putString("Auction Price", "Current Highest Bid: Rs " + auction.getHighestBid());
+                // CRITICAL: Pass the ID here so the BidForm knows which auction to update!
+                bundle.putInt("Auction ID", auction.getAucId());
                 bidSheet.setArguments(bundle);
                 bidSheet.show(requireActivity().getSupportFragmentManager(), "BidForm");
-            } else {
-                // Farmer clicked "View Details" -> Open Full View Activity
-                Intent intent = new Intent(requireActivity(), ViewAuction.class);
-                // intent.putExtra("auction_id", auction.getAucId());
-                startActivity(intent);
-            }
         };
 
         // Initialize our new specialized adapter
         myBidsAdapter = new MyBidsAdapter(new ArrayList<>(), role, clickListener);
         recyclerView.setAdapter(myBidsAdapter);
+
+        showLoadingState();
 
         // Fetch Data from Vercel using the secure token
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
@@ -127,20 +129,23 @@ public class BidsFragment extends Fragment {
         });
     }
 
+    private void showLoadingState() {
+        recyclerView.setVisibility(View.GONE);
+        tvStatusMessage.setVisibility(View.GONE);
+        myBidLogin.setVisibility(View.GONE);
+        loadingSpinner.setVisibility(View.VISIBLE);
+    }
+
     private void showErrorState(String message, boolean showLoginButton) {
+        loadingSpinner.setVisibility(View.GONE); // Hide spinner
         recyclerView.setVisibility(View.GONE);
         tvStatusMessage.setVisibility(View.VISIBLE);
         tvStatusMessage.setText(message);
-
-        // Only show the button if we explicitly tell it to!
-        if (showLoginButton) {
-            myBidLogin.setVisibility(View.VISIBLE);
-        } else {
-            myBidLogin.setVisibility(View.GONE);
-        }
+        myBidLogin.setVisibility(showLoginButton ? View.VISIBLE : View.GONE);
     }
 
     private void showDataState() {
+        loadingSpinner.setVisibility(View.GONE); // Hide spinner
         tvStatusMessage.setVisibility(View.GONE);
         myBidLogin.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
