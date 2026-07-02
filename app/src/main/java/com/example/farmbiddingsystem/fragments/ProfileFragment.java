@@ -10,7 +10,10 @@
     import android.view.ViewGroup;
     import android.widget.TextView;
 
+    import com.example.farmbiddingsystem.LoginActivity;
     import com.example.farmbiddingsystem.R;
+    import com.example.farmbiddingsystem.utils.AuctionDataHolder;
+    import com.example.farmbiddingsystem.utils.SharedPrefManager;
 
     /**
      * A simple {@link Fragment} subclass.
@@ -62,8 +65,27 @@
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.fragment_profile, container, false);
+            View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+            // Find the Logout TextView
+            TextView btnLogout = view.findViewById(R.id.btnLogout);
+
+            // Set the Click Listener
+            btnLogout.setOnClickListener(v -> {
+                // 1. Clear SharedPreferences (Token & Role)
+                SharedPrefManager prefManager = new SharedPrefManager(requireActivity());
+                prefManager.logout();
+
+                // 2. Clear Cached Data so the next user doesn't see old data
+                AuctionDataHolder.getInstance().clearAllData();
+
+                // 3. Redirect to Login Activity and clear the backstack
+                Intent intent = new Intent(requireActivity(), LoginActivity.class);
+                // These flags prevent the user from pressing 'Back' to return to the profile
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            });
+
+            return view;
         }
     }
