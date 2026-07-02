@@ -75,7 +75,7 @@ public interface ApiService {
     );
 
     @FormUrlEncoded
-    @POST("auction_actions.php") // Ensure this matches your filename
+    @POST("viewBid.php") // Ensure this matches your filename
     Call<GenericResponse> placeBid(
             @Header("Authorization") String token,
             @Field("action") String action,

@@ -111,6 +111,7 @@ public class HomeFragment extends Fragment {
                 bundle.putString("Auction Title", "Crop Name: " + auction.getAucTitle());
                 bundle.putString("Auction Price", "Current Highest Bid: Rs " + auction.getCurrentPrice());
                 bundle.putString("Token", token);
+                bundle.putInt("Auction ID", auction.getAucId());
                 bidSheet.setArguments(bundle);
                 bidSheet.show(requireActivity().getSupportFragmentManager(), "BidForm");
             }

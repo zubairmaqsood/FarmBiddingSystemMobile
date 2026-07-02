@@ -257,6 +257,12 @@ public class SignupActivity extends AppCompatActivity {
             return false;
         }
 
+        if (password.length() > 20) {
+            etPassword.setError("Password must not exceed 20 characters");
+            etPassword.requestFocus();
+            return false;
+        }
+
         if (!password.equals(confirmPassword)) {
             etConfirmPassword.setError("Passwords do not match");
             etConfirmPassword.requestFocus();

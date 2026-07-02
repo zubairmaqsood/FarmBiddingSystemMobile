@@ -80,7 +80,16 @@ public class BidForm extends BottomSheetDialogFragment {
                         btnSubmitBid.setText("Submit Bid");
                     }
                 } else {
-                    Toast.makeText(getContext(), "Server rejected the bid.", Toast.LENGTH_LONG).show();
+                    Log.e("Token",token);
+                    // Read the actual error string sent by PHP!
+                    try {
+                        String errorMsg = response.errorBody() != null ? response.errorBody().string() : "Unknown Server Error";
+                        Toast.makeText(getContext(), "Failed: " + errorMsg, Toast.LENGTH_LONG).show();
+                        Log.e("BID_FORM", "Error body: " + errorMsg);
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "Server rejected the bid.", Toast.LENGTH_LONG).show();
+                    }
+
                     btnSubmitBid.setEnabled(true);
                     btnSubmitBid.setText("Submit Bid");
                 }

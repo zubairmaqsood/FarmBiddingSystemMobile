@@ -80,18 +80,6 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
 
-        if (password.length() < 8) {
-            etPassword.setError("Password must be at least 8 characters");
-            etPassword.requestFocus();
-            return false;
-        }
-
-        if (password.length() > 20) {
-            etPassword.setError("Password must not exceed 20 characters");
-            etPassword.requestFocus();
-            return false;
-        }
-
         return true;
     }
 
