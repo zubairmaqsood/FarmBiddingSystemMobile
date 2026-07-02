@@ -13,10 +13,11 @@ public class SharedPrefManager {
         editor = sharedPreferences.edit();
     }
 
-    // Save data when user signs up or logs in
-    public void saveUser(String token, String role) {
+    // FIX 1: Ab yeh method userName bhi accept karega aur save karega
+    public void saveUser(String token, String role, String userName) {
         editor.putString("TOKEN", token);
         editor.putString("ROLE", role);
+        editor.putString("USER_NAME", userName); // Naam memory me save ho gaya
         editor.putBoolean("IS_LOGGED_IN", true);
         editor.apply();
     }
@@ -34,6 +35,11 @@ public class SharedPrefManager {
     // Get the Role to show/hide UI elements
     public String getRole() {
         return sharedPreferences.getString("ROLE", null);
+    }
+
+    // FIX 2: Profile Fragment ke liye naam nikalne wala method add kiya
+    public String getUserName() {
+        return sharedPreferences.getString("USER_NAME", "User");
     }
 
     // Call this when the user clicks "Logout"

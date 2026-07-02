@@ -40,8 +40,6 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-
-
         // Initialize Layouts and Button
         cardBuyer = findViewById(R.id.cardBuyer);
         cardFarmer = findViewById(R.id.cardFarmer);
@@ -67,7 +65,7 @@ public class SignupActivity extends AppCompatActivity {
         etFarmSize = findViewById(R.id.etFarmSize);
         etCity = findViewById(R.id.etCity);
 
-        //Back to login button
+        // Back to login button
         backToLoginBtn = findViewById(R.id.txtGoToLogin);
 
         // Setup Spinners
@@ -101,7 +99,7 @@ public class SignupActivity extends AppCompatActivity {
         backToLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SignupActivity.this,LoginActivity.class));
+                startActivity(new Intent(SignupActivity.this, LoginActivity.class));
             }
         });
     }
@@ -154,18 +152,20 @@ public class SignupActivity extends AppCompatActivity {
                     if (res.isSuccess()) {
                         // 4. Save to SharedPreferences!
                         SharedPrefManager prefManager = new SharedPrefManager(SignupActivity.this);
-                        prefManager.saveUser(res.getToken(), res.getRole());
+
+                        // FIX: Added 'fullName' as the third parameter to match SharedPrefManager
+                        prefManager.saveUser(res.getToken(), res.getRole(), fullName);
 
                         Toast.makeText(SignupActivity.this, "Account Created!", Toast.LENGTH_SHORT).show();
 
+                        clearForm(); // Clean up form values safely
+
                         // 5. Send user to MainActivity
                         Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                        // Clear the backstack so they can't hit 'back' to return to signup
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     } else {
-                        // PHP returned an error gracefully
                         Toast.makeText(SignupActivity.this, "Error: " + res.getError(), Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -263,8 +263,6 @@ public class SignupActivity extends AppCompatActivity {
             return false;
         }
 
-        // --- 2. Conditional Validations based on User Type ---
-
         switch (userType) {
             case "Buyer":
                 String buyerType = spinnerBuyerType.getText().toString().trim();
@@ -324,7 +322,6 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void clearForm() {
-        // Clear general fields
         etFullName.setText("");
         etCnic.setText("");
         etEmail.setText("");
@@ -332,25 +329,20 @@ public class SignupActivity extends AppCompatActivity {
         etPassword.setText("");
         etConfirmPassword.setText("");
 
-        // Clear buyer fields
         etCompanyName.setText("");
         etCompanyAddress.setText("");
 
-        // Clear farmer fields
         etFarmLocation.setText("");
         etFarmSize.setText("");
         etCity.setText("");
 
-        // Reset dropdowns
         spinnerUserType.setText("", false);
         spinnerBuyerType.setText("", false);
         spinnerCompanyType.setText("", false);
 
-        // Hide conditional cards
         cardBuyer.setVisibility(View.GONE);
         cardFarmer.setVisibility(View.GONE);
 
-        // Remove focus
         etFullName.clearFocus();
     }
 }
